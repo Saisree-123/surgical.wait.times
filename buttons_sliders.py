@@ -2,6 +2,8 @@
 import dash
 from dash import  dcc, html, Input, Output
 import dash_bootstrap_components as dbc
+import pandas as pd
+import altair as alt
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
