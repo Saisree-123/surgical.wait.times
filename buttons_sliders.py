@@ -11,13 +11,13 @@ app.layout=app.layout = dbc.Container([
     html.H1('SURGICAL WAIT TIMES',style={'color':'blue'}),
     html.Div([
         dcc.RangeSlider(
-            id="year",min=2009, max=2022,
+            id="year_slider",min=2009, max=2022,
             step=1, marks={i: f'{i}' for i in range(2009, 2023)},
             value=[2017, 2022])        
         ]),        
     html.Div([
         dcc.RadioItems(
-            id="health_authority",
+            id="health_authority_button",
             options=["Interior","Fraser","Vancouver Coastal","Vancouver Island","Northern","Provincial"],
             value='Interior')]),
         ])
