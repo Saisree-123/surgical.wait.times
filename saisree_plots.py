@@ -11,7 +11,7 @@ class Procedures:
 
     def __init__(self):
 
-        # read in data
+        # read in data        
         path = '2009_2021-quarterly-surgical_wait_times.xlsx'
         qdata = pd.read_excel(path)
         newdata = pd.read_excel('2021_2022-quarterly-surgical_wait_times-q3-interim.xlsx')
@@ -88,9 +88,7 @@ class Procedures:
 
     def fastest_procedures(self,health_authority,year):   
            
-        self.filtering(health_authority,year)
-        print("Fastest")
-        print(self.fastest) 
+        self.filtering(health_authority,year)        
         procedure_time_chart = alt.Chart(self.fastest,width=500,height=300).mark_bar(size=20,
                                                         point={"filled": False, "fill": "white"}).encode(
                                                         x=alt.X('wait_time_90',axis=alt.Axis(values=np.arange(0,14,2))),
@@ -101,9 +99,7 @@ class Procedures:
 
     def slowest_procedures(self,health_authority,year):   
           
-        self.filtering(health_authority,year)
-        print("Slowest")
-        print(self.slowest) 
+        self.filtering(health_authority,year)        
         procedure_time_chart = alt.Chart(self.slowest,width=500,height=300).mark_bar(size=20,
                                                         point={"filled": False, "fill": "white"}).encode(
                                                         x=alt.X('wait_time_90',axis=alt.Axis(values=np.arange(0,150,10))),
