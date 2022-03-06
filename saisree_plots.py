@@ -113,27 +113,49 @@ procedures=Procedures()
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
-card_50 = dbc.Card(
+wait_cases_card = dbc.Card(
     [
-        dbc.CardHeader("Mean waiting time - 50th percentile (in weeks)"),
+        dbc.CardHeader("Total waiting cases"),
+        dbc.CardBody(
+            [                
+                html.P("This is some card text", className="text-center",id="wait_cases_text")                
+            ]
+        ),        
+    ],
+    style={"width": "20rem",'display': 'inline-block',"justify-content":"center"}
+)
+completed_cases_card = dbc.Card(
+    [
+        dbc.CardHeader("Total completed cases"),
+        dbc.CardBody(
+            [                
+                html.P("This is some card text", className="text-center",id="completed_cases_text")                
+            ]
+        ),        
+    ],
+    style={"width": "20rem",'display': 'inline-block'}
+)
+wait_50_card = dbc.Card(
+    [
+        dbc.CardHeader("Mean waiting time(weeks) - 50 %le"),
         dbc.CardBody(
             [                
                 html.P("This is some card text", className="text-center",id="mean_waiting_time_50%_text")                
             ]
         ),        
     ],
-    style={"width": "18rem",'display': 'inline-block','align-items':'center', 'justify-content':'center'}
+    style={"width": "20rem",'display': 'inline-block','align-items':'center', 'justify-content':'center'}
 )
-card_90 = dbc.Card(
+wait_90_card = dbc.Card(
     [
-        dbc.CardHeader("Mean waiting time - 90th percentile (in weeks)"),
+        dbc.CardHeader("Mean waiting time(weeks) - 90 %le"),
         dbc.CardBody(
             [                
                 html.P("This is some card text", className="text-center",id="mean_waiting_time_90%_text")
             ]
         ),        
     ],
-    style={"width": "18rem",'display': 'inline-block','align-items':'center', 'justify-content':'center'}
+    style={"width": "20rem",'display': 'inline-block','align-items':'center', 'justify-content':'center'}
 )
 
 app.layout=app.layout = dbc.Container([   
@@ -165,8 +187,15 @@ app.layout=app.layout = dbc.Container([
             )
         ]),
     html.Div([
-                card_50,
-                card_90                
+                dbc.Row
+                (
+                    [
+                        dbc.Col(wait_cases_card),
+                        dbc.Col(completed_cases_card),
+                        dbc.Col(wait_50_card),
+                        dbc.Col(wait_90_card)
+                    ]
+                )             
             ])
         ])    
 ])
@@ -184,7 +213,9 @@ def update_procedure_plot(health_authority,year,pace):
         return procedures.fastest_procedures(health_authority,year)
 
 @app.callback(
-    [        
+    [
+        Output('wait_cases_text','children'),
+        Output('completed_cases_text','children'),
         Output('mean_waiting_time_50%_text','children'),        
         Output('mean_waiting_time_90%_text','children')
     ],
@@ -193,7 +224,7 @@ def update_procedure_plot(health_authority,year,pace):
         Input("year_slider","value")
     ]
 )
-def update_wait_time_card(health_authority,year):
+def update_score_cards(health_authority,year):
     if(health_authority=="Provincial"):
             health_authority="Provincial Health Services Authority"
     filtered_data = procedures.qdata[
@@ -201,9 +232,12 @@ def update_wait_time_card(health_authority,year):
                                     (procedures.qdata['year']>=year[0])&
                                     (procedures.qdata['year']<=year[1])
                                     ]    
+    total_waiting = filtered_data['waiting'].sum()
+    total_completed = filtered_data['completed'].sum()
     mean_wait_time_50= filtered_data['wait_time_50'].mean()
     mean_wait_time_90=filtered_data['wait_time_90'].mean()
+    return total_waiting,total_completed,round(mean_wait_time_50),round(mean_wait_time_90)
 
-    return round(mean_wait_time_50),round(mean_wait_time_90)
+    
 if __name__ == '__main__':
     app.run_server(debug=True,host='127.0.0.4')
