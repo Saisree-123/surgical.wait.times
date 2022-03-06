@@ -30,6 +30,7 @@ class Procedures:
 
         # convert <5 string to median value of 3
         qdata = qdata.replace('<5', 3)
+        self.qdata=qdata
 
         # drop rows with NAs
         clean = qdata.dropna()
@@ -86,30 +87,54 @@ class Procedures:
         self.fastest=self.fastest.round(2)
         self.slowest=self.slowest.round(2)
 
-    def fastest_procedures(self,health_authority,year):   
-           
-        self.filtering(health_authority,year)        
+    def fastest_procedures(self,health_authority,year):              
+        self.filtering(health_authority,year)  
+        sort_order=self.fastest['wait_time_90'].to_list()      
         procedure_time_chart = alt.Chart(self.fastest,width=500,height=300).mark_bar(size=20,
                                                         point={"filled": False, "fill": "white"}).encode(
                                                         x=alt.X('wait_time_90',axis=alt.Axis(values=np.arange(0,14,2))),
-                                                        y=alt.Y('procedure', scale=alt.Scale(zero=False)),
+                                                        y=alt.Y('procedure', scale=alt.Scale(zero=False),sort=sort_order),
                                                         color=alt.Color('procedure',legend=None))
         procedure_time_chart=procedure_time_chart+ procedure_time_chart.mark_text(dx=15).encode(text="wait_time_90")
         return procedure_time_chart.to_html()
 
-    def slowest_procedures(self,health_authority,year):   
-          
-        self.filtering(health_authority,year)        
+    def slowest_procedures(self,health_authority,year):           
+        self.filtering(health_authority,year)
+        sort_order=self.slowest['wait_time_90'].to_list()        
         procedure_time_chart = alt.Chart(self.slowest,width=500,height=300).mark_bar(size=20,
                                                         point={"filled": False, "fill": "white"}).encode(
                                                         x=alt.X('wait_time_90',axis=alt.Axis(values=np.arange(0,150,10))),
-                                                        y=alt.Y('procedure', scale=alt.Scale(zero=False)),
+                                                        y=alt.Y('procedure', scale=alt.Scale(zero=False),sort=sort_order),
                                                         color=alt.Color('procedure',legend=None))
         procedure_time_chart=procedure_time_chart+ procedure_time_chart.mark_text(dx=15).encode(text="wait_time_90")
         return procedure_time_chart.to_html()
 
 procedures=Procedures()
+
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+
+card_50 = dbc.Card(
+    [
+        dbc.CardHeader("Mean waiting time - 50th percentile (in weeks)"),
+        dbc.CardBody(
+            [                
+                html.P("This is some card text", className="text-center",id="mean_waiting_time_50%_text")                
+            ]
+        ),        
+    ],
+    style={"width": "18rem",'display': 'inline-block','align-items':'center', 'justify-content':'center'}
+)
+card_90 = dbc.Card(
+    [
+        dbc.CardHeader("Mean waiting time - 90th percentile (in weeks)"),
+        dbc.CardBody(
+            [                
+                html.P("This is some card text", className="text-center",id="mean_waiting_time_90%_text")
+            ]
+        ),        
+    ],
+    style={"width": "18rem",'display': 'inline-block','align-items':'center', 'justify-content':'center'}
+)
 
 app.layout=app.layout = dbc.Container([   
     html.Div([
@@ -138,9 +163,12 @@ app.layout=app.layout = dbc.Container([
             srcDoc=procedures.fastest_procedures(health_authority="Interior",year=[2017,2022]),
             style={'border-width': '0', 'width': '100%', 'height': '400px'}
             )
-        ])
-    ])
-    
+        ]),
+    html.Div([
+                card_50,
+                card_90                
+            ])
+        ])    
 ])
 
 @app.callback(
@@ -149,13 +177,33 @@ app.layout=app.layout = dbc.Container([
     Input("year_slider","value"),
     Input("fastest_slowest_treatments_buttons","value")]
 )
-def update_procedure(health_authority,year,pace):
-    print("pace is",pace)
+def update_procedure_plot(health_authority,year,pace):    
     if(pace=="Slowest"):
         return procedures.slowest_procedures(health_authority,year)
     else:
         return procedures.fastest_procedures(health_authority,year)
 
+@app.callback(
+    [        
+        Output('mean_waiting_time_50%_text','children'),        
+        Output('mean_waiting_time_90%_text','children')
+    ],
+    [
+        Input("health_authority_buttons","value"),
+        Input("year_slider","value")
+    ]
+)
+def update_wait_time_card(health_authority,year):
+    if(health_authority=="Provincial"):
+            health_authority="Provincial Health Services Authority"
+    filtered_data = procedures.qdata[
+                                    (procedures.qdata['health_authority']==health_authority)&
+                                    (procedures.qdata['year']>=year[0])&
+                                    (procedures.qdata['year']<=year[1])
+                                    ]    
+    mean_wait_time_50= filtered_data['wait_time_50'].mean()
+    mean_wait_time_90=filtered_data['wait_time_90'].mean()
 
+    return round(mean_wait_time_50),round(mean_wait_time_90)
 if __name__ == '__main__':
     app.run_server(debug=True,host='127.0.0.4')
