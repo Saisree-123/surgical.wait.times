@@ -48,7 +48,7 @@ class Waitcomplete:
         #filter and arrange data for plotting 
         #print(self.count.health_authority.unique())
         hosp_data = self.count.groupby(['hospital', 'year', 'quarter']).sum().reset_index()
-        hosp_data = hosp_data[(hosp_data['year']>=year[0]) & (hosp_data['year']<=year[0]+5)]
+        hosp_data = hosp_data[(hosp_data['year']>=year[0]) & (hosp_data['year']<=year[1])]
         hosp_data_melted = hosp_data.melt(id_vars=['hospital','year','quarter'])
         hosp_data_melted['time'] = hosp_data_melted['year'].map(str)+hosp_data_melted['quarter']
         hosp_data_melted = hosp_data_melted.drop(columns = ['year','quarter'])
@@ -77,6 +77,22 @@ waitcomplete = Waitcomplete()
 
 hosp_list = waitcomplete.count.hospital.unique()
 
+# interior_hosp = waitcomplete.count[waitcomplete.count.health_authority.eq('Interior')].hospital.unique() 
+# fraser_hosp = waitcomplete.count[waitcomplete.count.health_authority.eq('Fraser')].hospital.unique()
+# vanCoastal_hosp = waitcomplete.count[waitcomplete.count.health_authority.eq('Vancouver Coastal')].hospital.unique()
+# vanIsland_hosp = waitcomplete.count[waitcomplete.count.health_authority.eq('Vancouver Island')].hospital.unique()
+# northern_hosp = waitcomplete.count[waitcomplete.count.health_authority.eq('Northern')].hospital.unique()
+# provincial_hosp = waitcomplete.count[waitcomplete.count.health_authority.eq('Provincial Health Services Authority')].hospital.unique()
+
+# all_options = {
+#     'Interior': interior_hosp,
+#     'Fraser': fraser_hosp,
+#     'Vancouver Coastal': vanCoastal_hosp,
+#     'Vancouver Island': vanIsland_hosp,
+#     'Northern': northern_hosp,
+#     'Provincial Health Services': provincial_hosp
+# }
+
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 app.layout=app.layout = dbc.Container([   
     html.Div([
@@ -103,17 +119,16 @@ app.layout=app.layout = dbc.Container([
             id="hospital_dropdown",
             options=hosp_list,
             value='Kelowna General Hospital')
-            ]),
+            ]),        
     html.Div([
         html.Iframe(
             id="hosp_wait_comp_plot",            
             srcDoc=waitcomplete.wait_complete_plot(hospname="Kelowna General Hospital", year=[2017,2022]),
-            style={'border-width': '0', 'width': '100%', 'height': '400px'}
-            )
+            style={'border-width': '0', 'width': '500px', 'height': '350px','display': 'inline-block'})])
         ])
     ])
-    
-])
+
+
 
 @app.callback(
     Output("hosp_wait_comp_plot",'srcDoc'),   
@@ -122,8 +137,8 @@ app.layout=app.layout = dbc.Container([
     Input("hospital_dropdown","value")]
 )
 
-def update_wait_complete_plot( year, hospname):
-    return waitcomplete.wait_complete_plot( year, hospname)
+def update_wait_complete_plot(year, hospname):
+    return waitcomplete.wait_complete_plot(year, hospname)
 
 if __name__ == '__main__':
     app.run_server(debug=True,host='127.0.0.4')
