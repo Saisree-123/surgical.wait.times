@@ -1,4 +1,3 @@
-
 import dash
 from dash import  dcc, html, Input, Output
 import dash_bootstrap_components as dbc
@@ -19,10 +18,18 @@ app.layout=app.layout = dbc.Container([
     html.Div([
         dcc.RadioItems(
             id="health_authority_buttons",
-            options=["Interior","Fraser","Vancouver Coastal","Vancouver Island","Northern","Provincial"],
-            value='Interior')]),
+            options=[
+                {"label": "Interior", "value": "interior"},
+                {"label": "Fraser", "value": "fraser"},
+                {"label": "Vancouver Coastal", "value": "vanCoastal"},
+                {"label": "Vancouver Island", "value": "vanIsland"},
+                {"label": "Northern", "value": "northern"},
+                {"label": "Provincial", "value": "provincial"}
+              
+            ],
+            value='interior')])
         ])
 ])
 
 if __name__ == '__main__':
-    app.run_server(debug=True,host='127.0.0.4')
+    app.run_server(debug=True,host='127.0.0.1')
