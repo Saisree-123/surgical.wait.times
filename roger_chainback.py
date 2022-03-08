@@ -28,7 +28,7 @@ class Waitcomplete:
         qdata['year'] = pd.to_numeric(qdata['year'])
 
         # convert <5 string to median value of 3
-        qdata = qdata.replace('<5', 3)
+        self.qdata = qdata.replace('<5', 3)
 
         # drop rows with NAs
         clean = qdata.dropna()
@@ -49,8 +49,14 @@ class Waitcomplete:
         #print(self.count.health_authority.unique())
         hosp_data = self.count.groupby(['hospital', 'year', 'quarter']).sum().reset_index()
         hosp_data = hosp_data[(hosp_data['year']>=year[0]) & (hosp_data['year']<=year[1])]
+        print("Printing hospital data")
+        print(hosp_data.head())
         hosp_data_melted = hosp_data.melt(id_vars=['hospital','year','quarter'])
+        
+        print("lala",hosp_data_melted)  ############################################################### Empty dataframe here
+
         hosp_data_melted['time'] = hosp_data_melted['year'].map(str)+hosp_data_melted['quarter']
+        print(hosp_data_melted.head())
         hosp_data_melted = hosp_data_melted.drop(columns = ['year','quarter'])
 
         #create hospital dropdown list
@@ -58,6 +64,10 @@ class Waitcomplete:
 
         #waiting and completed cases for chosen hospital
         self.one_hospital = hosp_data_melted[hosp_data_melted['hospital'] == hospname]
+        print("###################################################################################")
+        print(hosp_data_melted.hospital.unique())
+        print(hospname)
+        print(self.one_hospital.head())
 
     def wait_complete_plot(self, year, hospname):   
         
@@ -113,22 +123,40 @@ app.layout=app.layout = dbc.Container([
                 {"label": "Northern", "value": "northern"},
                 {"label": "Provincial", "value": "provincial"},
             ],    
-            value='interior')]),
+            value='Interior')]),
     html.Div([
-        dcc.Dropdown(
-            id="hospital_dropdown",
-            options=hosp_list,
-            value='Kelowna General Hospital')
-            ]),        
+            html.Label("hosp:", style={'fontSize': 30, 'textAlign': 'center'}),
+            dcc.Dropdown(
+                id='hospital_dropdown',
+                options=[],
+                value=[],
+                clearable=False
+            )
+        ]),       
     html.Div([
         html.Iframe(
             id="hosp_wait_comp_plot",            
-            srcDoc=waitcomplete.wait_complete_plot(hospname="Kelowna General Hospital", year=[2017,2022]),
+            srcDoc=waitcomplete.wait_complete_plot(hospname="100 Mile District General Hospital", year=[2017,2022]),
             style={'border-width': '0', 'width': '500px', 'height': '350px','display': 'inline-block'})])
         ])
     ])
 
 
+@app.callback(
+        [Output('hospital_dropdown', 'options'),
+        Output('hospital_dropdown', 'value')],
+        Input('health_authority_buttons', 'value'),
+    )
+def set_county_options(health_athority):
+    if(health_athority=="Provincial"):
+        health_athority="Provincial Health Services Authority"
+    dff =waitcomplete.qdata[waitcomplete.qdata.health_authority==health_athority]
+    print(dff.columns)
+    counties_of_state = [{'label': c, 'value': c} for c in sorted(dff.hospital.unique())]
+    values_selected = [counties_of_state[0]]
+    print(counties_of_state)
+    print(values_selected[0]['label'])
+    return counties_of_state, values_selected[0]['label']
 
 @app.callback(
     Output("hosp_wait_comp_plot",'srcDoc'),   
@@ -138,7 +166,8 @@ app.layout=app.layout = dbc.Container([
 )
 
 def update_wait_complete_plot(year, hospname):
+    print(hospname)
     return waitcomplete.wait_complete_plot(year, hospname)
 
 if __name__ == '__main__':
-    app.run_server(debug=True,host='127.0.0.1')
+    app.run_server(debug=True,host='127.0.0.3')
