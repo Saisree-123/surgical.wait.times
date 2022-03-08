@@ -173,7 +173,6 @@ class SurgicalPlots:
 surgical_plots=SurgicalPlots()
 
 
-
 def map_image_plot(authority):
     print(authority)
     if authority == "Interior":
@@ -308,7 +307,7 @@ hosp_dropdown=html.Div([
 proportion_cases=html.Div([
         html.Iframe(
             id="comp_prop_plot_id",            
-            srcDoc=surgical_plots.comp_prop_plot(health_authority="interior", year=[2017,2022]),
+            srcDoc=surgical_plots.comp_prop_plot(health_authority="Interior", year=[2017,2022]),
             style={'border-width': '0', 'width': '100%', 'height': '400px'}
             )
         ])
