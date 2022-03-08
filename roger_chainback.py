@@ -120,7 +120,7 @@ app.layout=app.layout = dbc.Container([
         html.Iframe(
             id="hosp_wait_comp_plot",            
             srcDoc=waitcomplete.wait_complete_plot(health_authority="Interior",hospname="100 Mile District General Hospital", year=[2017,2022]),
-            style={'border-width': '0', 'width': '500px', 'height': '350px','display': 'inline-block'})])
+            style={'border-width': '0', 'width': '500px', 'height': '200px','display': 'inline-block'})])
         ])
     ])
 

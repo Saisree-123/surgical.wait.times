@@ -49,9 +49,9 @@ class SurgicalPlots:
         authority = count.groupby(['health_authority', 'year', 'quarter']).sum().reset_index()
 
         # authority data with calculated complete case ratio
-        authority['time'] = authority['year'].map(str)+authority['quarter']
-        authority['ratio'] = authority['completed']/(authority['completed']+authority['waiting'])
-        authority = authority.drop(columns = ['year', 'quarter'])
+        authority_comp_prop = authority.copy()
+        authority_comp_prop['ratio'] = authority_comp_prop['completed']/(authority_comp_prop['completed']+authority_comp_prop['waiting'])
+        self.authority_comp_prop = authority_comp_prop
 
        
         # Cataract Surgery is a unique high volume procedure often performed in seperate OR facilities and will be excluded from a part of the analysis.
@@ -150,7 +150,72 @@ class SurgicalPlots:
         )       
         return wc_plot.to_html()
 
+    # data grouped by health authority for a date range
+    def data_compprop(self, year, health_authority):
+        #data subseted by health authority
+        compprop_authority = self.authority_comp_prop[self.authority_comp_prop['health_authority']==health_authority]   
+
+        #data selected for a date range
+        compprop_authority_year = compprop_authority[(compprop_authority['year']>=year[0])&(compprop_authority['year']<=year[1])]    
+        self.compprop = compprop_authority_year
+        
+    #complete proportion plot
+    def comp_prop_plot(self, year, health_authority):   
+        self.data_compprop(year, health_authority) 
+#        print(self.compprop)
+        compprop_plot = alt.Chart(self.compprop,width=500,height=300).mark_line().encode(
+                            x=alt.X('year:N'),
+                            y=alt.Y('ratio:Q', scale=alt.Scale(zero=False)),
+                            color=alt.Color('quarter'))
+        compprop_plot = compprop_plot+compprop_plot.mark_circle()
+        return compprop_plot.to_html()
+
 surgical_plots=SurgicalPlots()
+
+
+
+def map_image_plot(authority):
+    print(authority)
+    if authority == "Interior":
+        print("Image found")
+        img = Image.open('data/images/interior.png')
+    elif authority == "Fraser":
+        img = Image.open('data/images/fraser.png')
+    elif authority == "Vancouver Coastal":
+        img = Image.open('data/images/vancoastal.png')
+    elif authority == "Vancouver Island":
+        img = Image.open('data/images/vanisland.png')
+    elif authority == "Northern":
+        img = Image.open('data/images/northern.png')
+    elif authority == "Provincial":
+        img = Image.open('data/images/provincial.png')
+
+    def image_formatter2(im):
+        with BytesIO() as buffer:
+            im.save(buffer, 'png')
+            data = base64.encodebytes(buffer.getvalue()).decode('utf-8')
+        return f"data:image/png;base64,{data}"
+
+    source = pd.DataFrame([
+        {"x": 0, "y": 0, "img": image_formatter2(img)}
+    ])
+
+    plot_img = alt.Chart(source).mark_image(
+        width=400,
+        height=400
+    ).encode(
+        x=alt.X('x', axis=None),
+        y=alt.Y('y', axis=None),
+        url='img'
+    ).configure_axis(
+        grid=False
+    ).configure_view(
+        strokeWidth=0
+    )
+    return plot_img.to_html()
+   
+
+
 # All the score cards
 wait_cases_card = dbc.Card(
     [
@@ -239,6 +304,22 @@ hosp_dropdown=html.Div([
             )
         ])
 
+# 1st plot - proportion of completed cases
+proportion_cases=html.Div([
+        html.Iframe(
+            id="comp_prop_plot_id",            
+            srcDoc=surgical_plots.comp_prop_plot(health_authority="interior", year=[2017,2022]),
+            style={'border-width': '0', 'width': '100%', 'height': '400px'}
+            )
+        ])
+
+# 2nd plot - BC map
+plot_map_object = html.Div([html.Iframe(
+    id = 'map',
+    srcDoc=map_image_plot(authority = 'Interior'), 
+    style={'border-width': '0', 'width': '100%', 'height': '500px'})
+    ])
+
 # 3rd plot - procedure plot
 procedure_plot = html.Div([
         html.Iframe(
@@ -259,28 +340,103 @@ hosp_wait_comp_cases =html.Div([
         
 app = dash.Dash(__name__, external_stylesheets=['https://codepen.io/chriddyp/pen/bWLwgP.css'])
 
-app.layout=app.layout = dbc.Container([  
+app.layout= dbc.Container([  
     html.Div([
-        dbc.Row([
-            dbc.Col([
-                html.H1('SURGICAL WAIT TIMES',style={'color':'blue'}),
-                ha_buttons
-            ])
-        ])
+        dbc.Row([ha_buttons]),
+        
+        yr_slider,        
+        proportion_cases,
+        plot_map_object,   
+        fast_slow_button,
+        procedure_plot,
+        hosp_dropdown,
+        hosp_wait_comp_cases               
     ]),
-    
     html.Div([
-        dbc.Row([
-            dbc.Col([
-                yr_slider,
-                fast_slow_button,
-                procedure_plot
-            ]),
-            
-        ])                    
-             
-    ])
+                dbc.Row
+                (
+                    [
+                        dbc.Col(wait_cases_card),
+                        dbc.Col(completed_cases_card),
+                        dbc.Col(wait_50_card),
+                        dbc.Col(wait_90_card)
+                    ]
+                )             
+            ])
 ])
+# app.layout= dbc.Container([  
+#     html.Div([
+#         dbc.Row([
+#             dbc.Col([
+#                 html.H1('SURGICAL WAIT TIMES',style={'color':'blue'}),
+#                 ha_buttons
+#             ])
+#         ])
+#     ]),
+    
+#     html.Div([
+#         dbc.Row([
+#             dbc.Col([
+#                 yr_slider,
+#                 fast_slow_button,
+#                 procedure_plot
+#             ]),
+            
+#         ])                    
+             
+#     ])
+# ])
+
+# 1st plot - callback
+@app.callback(
+    Output("comp_prop_plot_id",'srcDoc'),   
+    [
+    Input("year_slider","value"),
+    Input("health_authority_buttons","value")]
+)
+def update_comp_prop_plot(year, health_authority):
+    if health_authority=="Provincial":
+        health_authority="Provincial Health Services Authority"
+    return surgical_plots.comp_prop_plot(year, health_authority)
+
+# 2nd plot - map
+@app.callback(
+    Output('map', 'srcDoc'),
+    Input('health_authority_buttons', 'value'))
+def update_map_image_plot(authority):
+    return map_image_plot(authority)
+
+# chainback dropdown - callback
+@app.callback(
+        [Output('hospital_dropdown', 'options'),
+        Output('hospital_dropdown', 'value')],
+        Input('health_authority_buttons', 'value'),
+    )
+def set_hosp_dropdown(health_athority):
+    
+    if(health_athority=="Provincial"):
+        health_athority="Provincial Health Services Authority"
+    filtered_data=surgical_plots.count[surgical_plots.count.health_authority==health_athority]
+    
+    dropdown_options = [{'label': c, 'value': c} for c in sorted(filtered_data.hospital.unique())]
+    #values_selected = [dropdown_options[0]]
+    
+    return dropdown_options, dropdown_options[0]['label']
+
+# 4th plot - callback
+@app.callback(
+    Output("hosp_wait_comp_plot",'srcDoc'),   
+    [
+    Input("health_authority_buttons","value"),
+    Input("year_slider","value"),
+    Input("hospital_dropdown","value")]
+)
+
+def update_wait_complete_plot(health_authority,year, hospname):
+    if(health_authority=="Provincial"):
+        health_authority="Provincial Health Services Authority"
+    
+    return surgical_plots.wait_complete_plot(health_authority,year, hospname)
 
 # 3rd plot - callback
 @app.callback(
@@ -295,7 +451,7 @@ def update_procedure_plot(health_authority,year,pace):
     else:
         return surgical_plots.fastest_procedures(health_authority,year)
 
-# score cards
+# score cards - callback
 @app.callback(
     [
         Output('wait_cases_text','children'),
