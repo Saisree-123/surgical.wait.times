@@ -1,1 +1,1 @@
-web gunicorn buttons_sliders:server
+web gunicorn map_images:server
