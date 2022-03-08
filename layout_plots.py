@@ -261,20 +261,22 @@ app = dash.Dash(__name__, external_stylesheets=['https://codepen.io/chriddyp/pen
 
 app.layout=app.layout = dbc.Container([  
     html.Div([
-        dbc.Row([html.H1('SURGICAL WAIT TIMES',style={'color':'blue'})])
+        dbc.Row([
+            dbc.Col([
+                html.H1('SURGICAL WAIT TIMES',style={'color':'blue'}),
+                ha_buttons
+            ])
+        ])
     ]),
-    html.Div([
-        dbc.Row([ha_buttons])
-    ]),
+    
     html.Div([
         dbc.Row([
-            dbc.Col([yr_slider]),
-            dbc.Row(
-                [
-                    dbc.Col(fast_slow_button),
-                    dbc.Col(procedure_plot)
-                ]
-            )
+            dbc.Col([
+                yr_slider,
+                fast_slow_button,
+                procedure_plot
+            ]),
+            
         ])                    
              
     ])
