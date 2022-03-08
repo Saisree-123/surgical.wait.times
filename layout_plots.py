@@ -151,8 +151,6 @@ class SurgicalPlots:
         return wc_plot.to_html()
 
 surgical_plots=SurgicalPlots()
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
-
 # All the score cards
 wait_cases_card = dbc.Card(
     [
@@ -204,7 +202,9 @@ yr_slider=html.Div([
         dcc.RangeSlider(
             id="year_slider",min=2009, max=2022,
             step=1, marks={i: f'{i}' for i in range(2009, 2023)},
-            value=[2017, 2022])        
+            value=[2017, 2022],
+            vertical=True
+            )        
         ])
 
 # health authority radio buttons
@@ -257,18 +257,68 @@ hosp_wait_comp_cases =html.Div([
             )
         ])
         
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+app = dash.Dash(__name__, external_stylesheets=['https://codepen.io/chriddyp/pen/bWLwgP.css'])
 
 app.layout=app.layout = dbc.Container([  
-    html.Dic([
-        dbc.Row(
-            [
-                html.H1('SURGICAL WAIT TIMES',style={'color':'blue'})
-            ]
-        )
+    html.Div([
+        dbc.Row([html.H1('SURGICAL WAIT TIMES',style={'color':'blue'})])
+    ]),
+    html.Div([
+        dbc.Row([ha_buttons])
+    ]),
+    html.Div([
+        dbc.Row([
+            dbc.Col([yr_slider]),
+            dbc.Row(
+                [
+                    dbc.Col(fast_slow_button),
+                    dbc.Col(procedure_plot)
+                ]
+            )
+        ])                    
+             
     ])
-
 ])
+
+# 3rd plot - callback
+@app.callback(
+    Output("procedure_plot_id",'srcDoc'),   
+    [Input("health_authority_buttons","value"),
+    Input("year_slider","value"),
+    Input("fastest_slowest_treatments_buttons","value")]
+)
+def update_procedure_plot(health_authority,year,pace):    
+    if(pace=="Slowest"):
+        return surgical_plots.slowest_procedures(health_authority,year)
+    else:
+        return surgical_plots.fastest_procedures(health_authority,year)
+
+# score cards
+@app.callback(
+    [
+        Output('wait_cases_text','children'),
+        Output('completed_cases_text','children'),
+        Output('mean_waiting_time_50%_text','children'),        
+        Output('mean_waiting_time_90%_text','children')
+    ],
+    [
+        Input("health_authority_buttons","value"),
+        Input("year_slider","value")
+    ]
+)
+def update_score_cards(health_authority,year):
+    if(health_authority=="Provincial"):
+            health_authority="Provincial Health Services Authority"
+    filtered_data = surgical_plots.qdata[
+                                    (surgical_plots.qdata['health_authority']==health_authority)&
+                                    (surgical_plots.qdata['year']>=year[0])&
+                                    (surgical_plots.qdata['year']<=year[1])
+                                    ]    
+    total_waiting = filtered_data['waiting'].sum()
+    total_completed = filtered_data['completed'].sum()
+    mean_wait_time_50= filtered_data['wait_time_50'].mean()
+    mean_wait_time_90=filtered_data['wait_time_90'].mean()
+    return total_waiting,total_completed,round(mean_wait_time_50),round(mean_wait_time_90)
 
 if __name__ == '__main__':
     app.run_server(debug=True,host='127.0.0.7')

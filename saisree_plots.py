@@ -1,8 +1,5 @@
-<<<<<<< HEAD
+from tkinter import VERTICAL
 import pandas as pd
-=======
-git import pandas as pd
->>>>>>> map
 import numpy as np
 
 import altair as alt
@@ -62,7 +59,6 @@ class Procedures:
         # Cataract Surgery is a unique high volume procedure often performed in seperate OR facilities and will be excluded from a part of the analysis.
         self.no_cataract = main.query('procedure != "Cataract Surgery"')
             
-           
     def filtering(self,health_authority,year):
         # rename health authority
         if(health_authority=="Provincial"):
@@ -111,7 +107,8 @@ class Procedures:
                                                         y=alt.Y('procedure', scale=alt.Scale(zero=False),sort=sort_order),
                                                         color=alt.Color('procedure',legend=None))
         procedure_time_chart=procedure_time_chart+ procedure_time_chart.mark_text(dx=15).encode(text="wait_time_90")
-        return procedure_time_chart.to_html()
+        return procedure_time_chart.to_html() 
+    
 
 procedures=Procedures()
 
@@ -169,7 +166,9 @@ app.layout=app.layout = dbc.Container([
         dcc.RangeSlider(
             id="year_slider",min=2009, max=2022,
             step=1, marks={i: f'{i}' for i in range(2009, 2023)},
-            value=[2017, 2022])        
+            value=[2017, 2022],
+            vertical=True
+            )           
         ]),        
     html.Div([
         dcc.RadioItems(
@@ -244,4 +243,4 @@ def update_score_cards(health_authority,year):
 
     
 if __name__ == '__main__':
-    app.run_server(debug=True,host='127.0.0.4')
+    app.run_server(debug=True,host='127.0.0.10')
