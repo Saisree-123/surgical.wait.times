@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import pandas as pd
+=======
+git import pandas as pd
+>>>>>>> map
 import numpy as np
 
 import altair as alt
