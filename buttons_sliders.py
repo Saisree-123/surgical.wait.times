@@ -70,12 +70,12 @@ def authority_bar(authority = 'interior', count = count):
 plot_map_object = html.Div([html.Iframe(
     id = 'auth_bar',
     srcDoc=authority_bar(authority = 'interior'), 
-    style={'border-width': '0', 'width': '500px', 'height': '350px','display': 'inline-block'})])
+    style={'border-width': '0', 'width': '400px', 'height': '350px','display': 'inline-block'})])
 
 plot_map_object_dummy = html.Div([html.Iframe(
     id = 'auth_bar_dummy',
     srcDoc=authority_bar(authority = 'interior'), 
-    style={'border-width': '0', 'width': '500px', 'height': '350px', 'display': 'inline-block'})])
+    style={'border-width': '0', 'width': '400px', 'height': '350px', 'display': 'inline-block'})])
 
 #########################################################################
 
@@ -87,10 +87,12 @@ app.layout= dbc.Container([
             id="year_slider",min=2009, max=2022,
             step=1, marks={i: f'{i}' for i in range(2009, 2023)},
             value=[2017, 2022])        
-        ]),        
+        ]), 
+    html.Br(),           
     html.Div([
         dcc.RadioItems(
             id="health_authority_button",
+            style={"padding": "10px", "max-width": "1000px", "margin": "auto"},
             options=[
                 {"label": "Interior", "value": "interior"},
                 {"label": "Fraser", "value": "fraser"},
@@ -99,12 +101,13 @@ app.layout= dbc.Container([
                 {"label": "Northern", "value": "northern"},
                 {"label": "Provincial","value": "provincial"}
             ],
-            value='interior')])        
+            value='interior')
+            ])        
     ]),
-
-    html.Div(children = [plot_map_object,
-    
-        plot_map_object_dummy], className="row")
+    html.Br(),
+    dbc.Row([
+        dbc.Col(plot_map_object),    
+        dbc.Col(plot_map_object_dummy)])
 ])
 
 
