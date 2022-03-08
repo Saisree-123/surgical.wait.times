@@ -47,11 +47,17 @@ class Waitcomplete:
 
         #filter and arrange data for plotting 
         #print(self.count.health_authority.unique())
-        hosp_data = self.count.groupby(['hospital', 'year', 'quarter']).sum().reset_index()
+        print("printing count")
+        print(self.count.head())
+        hosp_data = self.count.groupby(['health_authority','hospital', 'year', 'quarter']).sum().reset_index()
+        print(hosp_data)
         hosp_data = hosp_data[(hosp_data['year']>=year[0]) & (hosp_data['year']<=year[1])]
         print("Printing hospital data")
         print(hosp_data.head())
         hosp_data_melted = hosp_data.melt(id_vars=['hospital','year','quarter'])
+        
+        print(hosp_data_melted.head())
+        
         
         print("lala",hosp_data_melted)  ############################################################### Empty dataframe here
 
