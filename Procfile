@@ -1,1 +1,1 @@
-web: gunicorn map_images:server
+web: gunicorn dash_code:server
