@@ -1,4 +1,5 @@
 from io import BytesIO
+from matplotlib.pyplot import Slider
 
 import pandas as pd
 import numpy as np
@@ -17,11 +18,8 @@ class SurgicalPlots:
     def __init__(self):
 
         # read in data
-        path = '2009_2021-quarterly-surgical_wait_times.xlsx'
-        qdata = pd.read_excel(path)
-        newdata = pd.read_excel(
-            '2021_2022-quarterly-surgical_wait_times-q3-interim.xlsx')
-        qdata = pd.concat([qdata, newdata])
+        qdata=pd.read_excel('2009_2022_surgical_wait_times_BC.xlsx')
+        qdata = qdata.drop(['Unnamed: 0'],axis=1)
         qdata.columns = qdata.columns.str.lower()
 
         # Rename columns
@@ -295,7 +293,8 @@ yr_slider=html.Div([
             vertical=True,
             verticalHeight=900
             )        
-        ],style={"border": "10px lightgray solid"})
+        ],style={})
+
 
 # health authority radio buttons
 ha_buttons = html.Div([
