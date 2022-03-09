@@ -167,7 +167,8 @@ class SurgicalPlots:
                             x=alt.X('year:N'),
                             y=alt.Y('ratio:Q', scale=alt.Scale(zero=False)),
                             color=alt.Color('quarter'))
-        compprop_plot = compprop_plot+compprop_plot.mark_circle()
+        compprop_plot = compprop_plot+compprop_plot.mark_circle().configure_view(stroke='transparent'
+        )
         return compprop_plot.to_html()
 
 surgical_plots=SurgicalPlots()
