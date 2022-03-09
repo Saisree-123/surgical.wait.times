@@ -1,2 +1,1 @@
-web: gunicorn heroku_saisree:server
---timeout $TIMEOUT = 300
+web: gunicorn map_images:server
