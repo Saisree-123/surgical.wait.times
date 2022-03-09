@@ -163,7 +163,7 @@ class SurgicalPlots:
     def comp_prop_plot(self, year, health_authority):   
         self.data_compprop(year, health_authority) 
 #        print(self.compprop)
-        compprop_plot = alt.Chart(self.compprop,width=500,height=300).mark_line().encode(
+        compprop_plot = alt.Chart(self.compprop,width=500,height=400).mark_line().encode(
                             x=alt.X('year:N'),
                             y=alt.Y('ratio:Q', scale=alt.Scale(zero=False)),
                             color=alt.Color('quarter'))
@@ -172,11 +172,12 @@ class SurgicalPlots:
 
 surgical_plots=SurgicalPlots()
 
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 def map_image_plot(authority):
-    print(authority)
+    
     if authority == "Interior":
-        print("Image found")
+       
         img = Image.open('data/images/interior.png')
     elif authority == "Fraser":
         img = Image.open('data/images/fraser.png')
@@ -225,7 +226,7 @@ wait_cases_card = dbc.Card(
             ]
         ),        
     ],
-    style={"width": "20rem",'display': 'inline-block',"justify-content":"center"}
+    style={"border": "12px lightgray solid",'display': 'inline-block',"justify-content":"center"}
 )
 completed_cases_card = dbc.Card(
     [
@@ -236,7 +237,7 @@ completed_cases_card = dbc.Card(
             ]
         ),        
     ],
-    style={"width": "20rem",'display': 'inline-block'}
+    style={"border": "12px lightgray solid",'display': 'inline-block'}
 )
 wait_50_card = dbc.Card(
     [
@@ -247,7 +248,7 @@ wait_50_card = dbc.Card(
             ]
         ),        
     ],
-    style={"width": "20rem",'display': 'inline-block','align-items':'center', 'justify-content':'center'}
+    style={"border": "12px lightgray solid",'display': 'inline-block','align-items':'center', 'justify-content':'center'}
 )
 wait_90_card = dbc.Card(
     [
@@ -258,7 +259,7 @@ wait_90_card = dbc.Card(
             ]
         ),        
     ],
-    style={"width": "20rem",'display': 'inline-block','align-items':'center', 'justify-content':'center'}
+    style={"border": "12px lightgray solid",'display': 'inline-block','align-items':'center', 'justify-content':'center'}
 )
 
 # year slider
@@ -267,9 +268,10 @@ yr_slider=html.Div([
             id="year_slider",min=2009, max=2022,
             step=1, marks={i: f'{i}' for i in range(2009, 2023)},
             value=[2017, 2022],
-            vertical=True
+            vertical=True,
+            verticalHeight=900
             )        
-        ])
+        ],style={"border": "12px lightgray solid"})
 
 # health authority radio buttons
 ha_buttons=html.Div([
@@ -283,15 +285,15 @@ ha_buttons=html.Div([
                 {"label": "Northern", "value": "Northern"},
                 {"label": "Provincial", "value": "Provincial"},
             ],    
-            value='Interior')])
+            value='Interior')],style={"width": "100%", "border": "12px lightgray solid"})
 
 # pace button
-fast_slow_button=html.Div([
-        dcc.RadioItems(
+fast_slow_button=dcc.RadioItems(
             id="fastest_slowest_treatments_buttons",
             options=["Fastest","Slowest"],
-            value='Fastest')
-            ])
+            value='Fastest',
+            style={'border-width':'0'})
+            
 
 # hospital dropdown
 hosp_dropdown=html.Div([            
@@ -301,23 +303,23 @@ hosp_dropdown=html.Div([
                 value=[],
                 clearable=False
             )
-        ])
+        ],style={"border": "12px lightgray solid"})
 
 # 1st plot - proportion of completed cases
 proportion_cases=html.Div([
         html.Iframe(
             id="comp_prop_plot_id",            
             srcDoc=surgical_plots.comp_prop_plot(health_authority="Interior", year=[2017,2022]),
-            style={'border-width': '0', 'width': '100%', 'height': '400px'}
+            style={'border-width': '0', 'width': '100%', 'height': '500px'}
             )
-        ])
+        ],style={ "border": "12px lightgray solid"})
 
 # 2nd plot - BC map
 plot_map_object = html.Div([html.Iframe(
     id = 'map',
     srcDoc=map_image_plot(authority = 'Interior'), 
     style={'border-width': '0', 'width': '100%', 'height': '500px'})
-    ])
+    ],style={"border": "12px lightgray solid"})
 
 # 3rd plot - procedure plot
 procedure_plot = html.Div([
@@ -326,65 +328,67 @@ procedure_plot = html.Div([
             srcDoc=surgical_plots.fastest_procedures(health_authority="Interior",year=[2017,2022]),
             style={'border-width': '0', 'width': '100%', 'height': '400px'}
             )
-        ])
+        ],style={"border": "12px lightgray solid"})
 
 # 4th plot - hospital wait and completed cases
 hosp_wait_comp_cases =html.Div([
         html.Iframe(
             id="hosp_wait_comp_plot",            
             srcDoc=surgical_plots.wait_complete_plot(health_authority="Interior",hospname="100 Mile District General Hospital", year=[2017,2022]),
-            style={'border-width': '0', 'width': '500px', 'height': '350px','display': 'inline-block'}
+            style={'border-width': '0', 'width': '100%', 'height': '350px','display': 'inline-block'}
             )
-        ])
-        
-app = dash.Dash(__name__, external_stylesheets=['https://codepen.io/chriddyp/pen/bWLwgP.css'])
+        ],style={ "border": "12px lightgray solid"})
 
-app.layout= dbc.Container([  
-    html.Div([
-        dbc.Row([ha_buttons]),
-        
-        yr_slider,        
-        proportion_cases,
-        plot_map_object,   
-        fast_slow_button,
-        procedure_plot,
-        hosp_dropdown,
-        hosp_wait_comp_cases               
-    ]),
-    html.Div([
-                dbc.Row
-                (
-                    [
-                        dbc.Col(wait_cases_card),
-                        dbc.Col(completed_cases_card),
-                        dbc.Col(wait_50_card),
-                        dbc.Col(wait_90_card)
-                    ]
-                )             
-            ])
+row1 =html.Div([
+    dbc.Row([
+    dbc.Col(
+        html.Iframe(
+            id="comp_prop_plot_id",            
+            srcDoc=surgical_plots.comp_prop_plot(health_authority="Interior", year=[2017,2022]),
+            style={'border-width': '0', 'width': '400px', 'height': '400px'}
+            ),md=1
+    ),
+    dbc.Col(
+        html.Iframe(
+        id = 'map',
+        srcDoc=map_image_plot(authority = 'Interior'), 
+        style={'border-width': '0', 'width': '400px', 'height': '500px'}
+        ),md=1
+    )
+    ])
+],  className='row')    
+
+procedure_row=dbc.Row([
+
 ])
-# app.layout= dbc.Container([  
-#     html.Div([
-#         dbc.Row([
-#             dbc.Col([
-#                 html.H1('SURGICAL WAIT TIMES',style={'color':'blue'}),
-#                 ha_buttons
-#             ])
-#         ])
-#     ]),
+
+header=html.Div([
+            dbc.Row(html.H1('SURGICAL WAIT TIMES',style={'color':'blue'}),align="end")
+        ]),
+
+app.layout= html.Div([  
+        dbc.Row(html.H1('SURGICAL WAIT TIMES',style={'color':'blue'})),          
+        dbc.Row(ha_buttons,align="end"),
+        
+        dbc.Row([
+            dbc.Col([dbc.Col(yr_slider,width=1)]),            
+            dbc.Row(
+                [
+                dbc.Col([dbc.Col(proportion_cases)],width=10),
+                #fast_slow_button,
+                dbc.Col([dbc.Col(procedure_plot)],width=10)
+                ]
+            ),  
+            dbc.Row(
+                [
+                dbc.Col([dbc.Col(plot_map_object)],width=10),
+                #dbc.Col([dbc.Col(hosp_dropdown)],width=10),
+                dbc.Col([dbc.Col(hosp_wait_comp_cases)],width=10)
+                ]
+        )]                  
+    )                
     
-#     html.Div([
-#         dbc.Row([
-#             dbc.Col([
-#                 yr_slider,
-#                 fast_slow_button,
-#                 procedure_plot
-#             ]),
-            
-#         ])                    
-             
-#     ])
-# ])
+], style={'marginTop': 5,'marginLeft':70})
 
 # 1st plot - callback
 @app.callback(
