@@ -17,7 +17,7 @@ class SurgicalPlots:
     def __init__(self):
 
         # read in data        
-        path = 'data/final_filtered.xlsx'
+        path = 'https://github.com/Saisree-123/surgical.wait.times/blob/main/data/final_filtered.xlsx'
         qdata = pd.read_excel(path)
         #print(qdata.columns)
         qdata=qdata.drop(['Unnamed: 0'],axis=1)
