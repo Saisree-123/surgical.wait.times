@@ -303,7 +303,7 @@ hosp_dropdown=html.Div([
                 value=[],
                 clearable=False
             )
-        ],style={"border": "12px lightgray solid"})
+        ],style={"width":"50%","border": "12px lightgray solid"})
 
 # 1st plot - proportion of completed cases
 proportion_cases=html.Div([
@@ -319,7 +319,7 @@ plot_map_object = html.Div([html.Iframe(
     id = 'map',
     srcDoc=map_image_plot(authority = 'Interior'), 
     style={'border-width': '0', 'width': '100%', 'height': '500px'})
-    ],style={"border": "12px lightgray solid"})
+    ],style={"width":"120%","border": "12px lightgray solid"})
 
 # 3rd plot - procedure plot
 procedure_plot = html.Div([
@@ -330,14 +330,14 @@ procedure_plot = html.Div([
             )
         ],style={"border": "12px lightgray solid"})
 
-# 4th plot - hospital wait and completed cases
+#4th plot - hospital wait and completed cases
 hosp_wait_comp_cases =html.Div([
         html.Iframe(
             id="hosp_wait_comp_plot",            
             srcDoc=surgical_plots.wait_complete_plot(health_authority="Interior",hospname="100 Mile District General Hospital", year=[2017,2022]),
-            style={'border-width': '0', 'width': '100%', 'height': '350px','display': 'inline-block'}
+            style={'border-width': '0', 'width': '100%', 'height': '350px','display': 'inline-block',}
             )
-        ],style={ "border": "12px lightgray solid"})
+        ],style={ "width":'120%',"border": "12px lightgray solid"})
 
 row1 =html.Div([
     dbc.Row([
@@ -358,10 +358,24 @@ row1 =html.Div([
     ])
 ],  className='row')    
 
-procedure_row=dbc.Row([
+# procedure_row=dbc.Row([
+#     dbc.Row(fast_slow_button),
+#     dbc.Row(
+#         html.Iframe(
+#             id="procedure_plot_id",            
+#             srcDoc=surgical_plots.fastest_procedures(health_authority="Interior",year=[2017,2022]),
+#             style={'border-width': '0', 'width': '100%', 'height': '400px'}
+#         )   
+#     )
 
-])
+# ])
 
+# hosp_row=dbc.Row([
+#     hosp_dropdown,
+#     dbc.Col(
+
+#     )
+# ])
 header=html.Div([
             dbc.Row(html.H1('SURGICAL WAIT TIMES',style={'color':'blue'}),align="end")
         ]),
@@ -369,22 +383,23 @@ header=html.Div([
 app.layout= html.Div([  
         dbc.Row(html.H1('SURGICAL WAIT TIMES',style={'color':'blue'})),          
         dbc.Row(ha_buttons,align="end"),
-        
+        dbc.Row(hosp_dropdown),
         dbc.Row([
             dbc.Col([dbc.Col(yr_slider,width=1)]),            
             dbc.Row(
                 [
                 dbc.Col([dbc.Col(proportion_cases)],width=10),
-                #fast_slow_button,
+                dbc.Col([dbc.Col(fast_slow_button)],width=10),
                 dbc.Col([dbc.Col(procedure_plot)],width=10)
                 ]
             ),  
             dbc.Row(
                 [
                 dbc.Col([dbc.Col(plot_map_object)],width=10),
-                #dbc.Col([dbc.Col(hosp_dropdown)],width=10),
+                #dbc.Col([dbc.Col(hosp_dropdown)],width=5),
                 dbc.Col([dbc.Col(hosp_wait_comp_cases)],width=10)
                 ]
+
         )]                  
     )                
     
