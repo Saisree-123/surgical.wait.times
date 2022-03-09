@@ -313,24 +313,28 @@ ha_buttons = html.Div([
         labelStyle = {'cursor': 'pointer', 'margin-left':'25px'})],
         style = {'stroke-width': '20px'})
 
+# hospital dropdown
+hosp_dropdown=html.Div([
+            dcc.Dropdown(
+                id='hospital_dropdown',
+                options=[],
+                value=[],
+                clearable=False
+            )
+        ],style={"width":"100%"})
+
 # pace button
 fast_slow_button = html.Div([
     dcc.RadioItems(
         id="fastest_slowest_treatments_buttons",
-        options=["Fastest", "Slowest"],
-        value='Fastest',
-        labelStyle = {'cursor': 'pointer', 'margin-left':'20px'})
+        options=[
+            {"label": "Fastest", "value": "Fastest"},
+            {"label": "Slowest", "value": "Slowest"},
+        ],
+        value="Fastest",
+        labelStyle = {"cursor": "pointer", "margin-left":"20px"})
 ])
 
-# hospital dropdown
-hosp_dropdown = html.Div([
-    dcc.Dropdown(
-        id='hospital_dropdown',
-        options=[],
-        value=[],
-        clearable=False
-    )
-])
 
 # 1st plot - proportion of completed cases
 proportion_cases = html.Div([
