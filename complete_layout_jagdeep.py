@@ -18,48 +18,36 @@ class SurgicalPlots:
     def __init__(self):
 
         # read in data
-        qdata=pd.read_excel('2009_2022_surgical_wait_times_BC.xlsx')
-        qdata = qdata.drop(['Unnamed: 0'],axis=1)
-        qdata.columns = qdata.columns.str.lower()
-
-        # Rename columns
-        qdata.rename(columns={'fiscal_year': 'year',
-                              'hospital_name': 'hospital',
-                              'procedure_group': 'procedure',
-                              'completed_50th_percentile': 'wait_time_50',
-                              'completed_90th_percentile': 'wait_time_90'}, inplace=True)
-
-        # Format year column
-        qdata['year'] = qdata['year'].str.replace('(/).*', "")
-        qdata['year'] = pd.to_numeric(qdata['year'])
+        path = 'final_filtered.xlsx'
+        qdata = pd.read_excel(path)
 
         # convert <5 string to median value of 3
         qdata = qdata.replace('<5', 3)
         self.qdata = qdata
-        # drop rows with NAs
+
+        # drop rows with NAs and defining portions
         clean = qdata.dropna()
-        count = qdata.iloc[:, 0:7]
+        count = qdata.iloc[:,0:7]
+        main = qdata
 
         # drop "All" data
-        main = clean.query(
-            'procedure != "All Procedures" & hospital != "All Facilities" & health_authority != "All Health Authorities"')
-        count = count.query(
-            'procedure != "All Procedures" & hospital != "All Facilities" & health_authority != "All Health Authorities"')
+        
         self.count = count
-        all = clean.query(
-            'procedure == "All Procedures" & hospital == "All Facilities" & health_authority == "All Health Authorities"')
+        all = clean.query('procedure == "All Procedures" & hospital == "All Facilities" & health_authority == "All Health Authorities"')
 
-        authority = count.groupby(
-            ['health_authority', 'year', 'quarter']).sum().reset_index()
-
+        qdata['wating'] = pd.to_numeric(qdata['waiting'])
+        qdata['completed'] = pd.to_numeric(qdata['completed'])
+        authority = count.groupby(['health_authority', 'year', 'quarter']).sum().reset_index()
+        
         # authority data with calculated complete case ratio
         authority_comp_prop = authority.copy()
-        authority_comp_prop['ratio'] = authority_comp_prop['completed'] / \
-            (authority_comp_prop['completed']+authority_comp_prop['waiting'])
+        authority_comp_prop['ratio'] = authority_comp_prop['completed']/(authority_comp_prop['completed']+authority_comp_prop['waiting'])
         self.authority_comp_prop = authority_comp_prop
 
+       
         # Cataract Surgery is a unique high volume procedure often performed in seperate OR facilities and will be excluded from a part of the analysis.
         self.no_cataract = main.query('procedure != "Cataract Surgery"')
+
 
     def filtering(self, health_authority, year):
         # rename health authority
@@ -191,9 +179,9 @@ surgical_plots = SurgicalPlots()
 
 
 def map_image_plot(authority):
-    print(authority)
+    
     if authority == "Interior":
-        print("Image found")
+        
         img = Image.open('data/images/interior.png')
     elif authority == "Fraser":
         img = Image.open('data/images/fraser.png')
