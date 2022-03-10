@@ -28,7 +28,7 @@ This document (the README file) is going to give you an overview of our project.
 
 Links to deploy our app: <span style="color:red">(links to be added)</span>
     
-Jagdeep - [BC Surgical Wait Times Dashboard](https://BC Surgical Wait Times Dashboard.herokuapp.com/)    
+Jagdeep - [BC Surgical Wait Times Dashboard](https://surgicaltestapp.herokuapp.com/)    
     
 Saisree - [BC Surgical Wait Times Dashboard](https://BC Surgical Wait Times Dashboard.herokuapp.com/)
    
