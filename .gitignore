@@ -129,4 +129,5 @@ dmypy.json
 .pyre/
 
 # git stuff
-.DS_Store
+.DS_Store/
+.Rhistory/
