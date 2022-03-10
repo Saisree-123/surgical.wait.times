@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # BC Surgical Wait Times Dashboard (Group D)
 
 
@@ -102,3 +103,7 @@ Thank you so much for visiting the project and we do hope that you'll join us on
 
 
 
+=======
+# surgical.wait.times
+Surgical wait times of British Columbia
+>>>>>>> 1c4966f6008e9b6a148a636886221c93abc9ed7c

@@ -1,2 +1,2 @@
-web: gunicorn heroku_saisree:server
---timeout $TIMEOUT = 300
+web: gunicorn dash_code:server
+--timeout $TIMEOUT = 1000
