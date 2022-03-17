@@ -105,6 +105,9 @@ class SurgicalPlots:
             color=alt.Color('procedure', legend=None))
         procedure_time_chart = procedure_time_chart + \
             procedure_time_chart.mark_text(dx=15).encode(text="wait_time_90")
+        procedure_time_chart = procedure_time_chart.configure_axis(
+            grid=False
+            ).configure_view(strokeWidth=0)
         return procedure_time_chart.to_html()
 
     def slowest_procedures(self, health_authority, year):
@@ -118,6 +121,9 @@ class SurgicalPlots:
             color=alt.Color('procedure', legend=None))
         procedure_time_chart = procedure_time_chart + \
             procedure_time_chart.mark_text(dx=15).encode(text="wait_time_90")
+        procedure_time_chart = procedure_time_chart.configure_axis(
+            grid=False
+            ).configure_view(strokeWidth=0)
         return procedure_time_chart.to_html()
 
     # data grouped by hospital for selected health authority and date range
@@ -157,11 +163,11 @@ class SurgicalPlots:
                 title=None, labels=False, ticks=False)),
             y=alt.Y('value', scale=alt.Scale(zero=False),
                     axis=alt.Axis(grid=False)),
-            color=alt.Color('variable'),
+            color=alt.Color('variable', legend=alt.Legend(orient="top", title = "")),
             column=alt.Column('time', header=alt.Header(
                 title=None, labelOrient='bottom', labelAngle=90))
         ).configure_view(stroke='transparent'
-                         ).properties(height=270
+                         ).properties(height=250
                                       ).configure_facet(spacing=7
                                                         )
         return wc_plot.to_html()
@@ -181,57 +187,49 @@ class SurgicalPlots:
     def comp_prop_plot(self, year, health_authority):
         self.data_compprop(year, health_authority)
 #        print(self.compprop)
-        compprop_plot = alt.Chart(self.compprop, width=405, height = 300).mark_line().encode(
+        compprop_plot = alt.Chart(self.compprop, width=400, height = 270).mark_line().encode(
             x=alt.X('year:N'),
             y=alt.Y('ratio:Q', scale=alt.Scale(zero=False)),
-            color=alt.Color('quarter'))
+            color=alt.Color('quarter', legend=alt.Legend(orient="top", title = "Quarter"))
+            )
         compprop_plot = compprop_plot+compprop_plot.mark_circle()
+        compprop_plot = compprop_plot.configure_axis(
+            grid=False
+            ).configure_view(strokeWidth=0)
         return compprop_plot.to_html()
 
 
 surgical_plots = SurgicalPlots()
 
 
-def map_image_plot(authority):
-    print(authority)
-    if authority == "Interior":
-        print("Image found")
-        img = Image.open('data/images/interior.png')
-    elif authority == "Fraser":
-        img = Image.open('data/images/fraser.png')
-    elif authority == "Vancouver Coastal":
-        img = Image.open('data/images/vancoastal.png')
-    elif authority == "Vancouver Island":
-        img = Image.open('data/images/vanisland.png')
-    elif authority == "Northern":
-        img = Image.open('data/images/northern.png')
-    elif authority == "Provincial":
-        img = Image.open('data/images/provincial.png')
+map_data = alt.Data(url='https://raw.githubusercontent.com/Jagdeep14/shapefile_data/main/HA_2018.geojson', format=alt.DataFormat(property='features',type='json'))
 
-    def image_formatter2(im):
-        with BytesIO() as buffer:
-            im.save(buffer, 'png')
-            data = base64.encodebytes(buffer.getvalue()).decode('utf-8')
-        return f"data:image/png;base64,{data}"
-
-    source = pd.DataFrame([
-        {"x": 0, "y": 0, "img": image_formatter2(img)}
-    ])
-
-    plot_img = alt.Chart(source).mark_image(
-        width=400,
-        height=400
-    ).encode(
-        x=alt.X('x', axis=None),
-        y=alt.Y('y', axis=None),
-        url='img'
-    ).configure_axis(
-        grid=False
-    ).configure_view(
+def map_plot(authority = 'Interior'):
+    # plot1 is only for provincial authority
+    if authority == "Provincial":
+        plot1 = alt.Chart(map_data, width = 370, height = 350).mark_geoshape(stroke = "black", opacity = 0.5, fill = "blue"
+        ).encode(
+            tooltip = "properties.HA_Name:N"
+        ).project(
+            type='identity', reflectY=True
+        ).configure_view(
         strokeWidth=0
     )
-    return plot_img.to_html()
-
+        return plot1.to_html()
+    # Plot2 is for all other authorities other than provincial
+    else:
+        plot2 = alt.Chart(map_data, width = 370, height = 350).mark_geoshape(stroke = "black"
+        ).encode(
+            color= alt.Color("properties.HA_Name:N", legend = None),
+            opacity=alt.condition(alt.datum['properties']['HA_Name'] == authority, alt.value(1), alt.value(0.3)),
+            tooltip = "properties.HA_Name:N"
+        ).project(
+            type='identity', reflectY=True
+        ).configure_view(
+        strokeWidth=0
+    )
+        return plot2.to_html()
+    
 
 # All the score cards
 wait_cases_card = dbc.Card(
@@ -289,17 +287,15 @@ wait_90_card = dbc.Card(
 # year slider
 yr_slider=html.Div([
         dcc.RangeSlider(
-            id="year_slider",min=2009, max=2022,
-            step=1, marks={i: f'{i}' for i in range(2009, 2023)},
-            value=[2017, 2022],
-            vertical=True,
-            verticalHeight=900
+            id="year_slider",min=2015, max=2021,
+            step=1, marks={i: f'{i}' for i in range(2009, 2022)},
+            value=[2017, 2021]
             )        
-        ],style={"border": "10px lightgray solid"})
+        ])
 
 # health authority radio buttons
 ha_buttons = html.Div([
-    dcc.RadioItems(
+    dcc.Dropdown(
         id="health_authority_buttons",
         options=[
             {"label": "Interior", "value": "Interior"},
@@ -309,8 +305,7 @@ ha_buttons = html.Div([
             {"label": "Northern", "value": "Northern"},
             {"label": "Provincial", "value": "Provincial"},
         ],
-        value='Interior',
-        labelStyle = {'cursor': 'pointer', 'margin-left':'25px'})],
+        value='Interior')],
         style = {'stroke-width': '20px'})
 
 # hospital dropdown
@@ -349,7 +344,7 @@ proportion_cases = html.Div([
 # 2nd plot - BC map
 plot_map_object = html.Div([html.Iframe(
     id='map',
-    srcDoc=map_image_plot(authority='Interior'),
+    srcDoc=map_plot(authority='Interior'),
     style={'border-width': '0', 'width': '100%', 'height': '500px'})
 ])
 
@@ -378,39 +373,40 @@ app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 server = app.server
 
 #### Title row ################################
-title_row = html.Div([
-    dbc.Row([
+title_row = dbc.Row([
         html.H1('SURGICAL WAIT TIMES - BC', 
-        style={'background-color': '#000080', # navy blue 
+        style={'background-color': '#1f77b4', # navy blue -> #000080
                 'color': 'white', 
-                'font-weight': 'bolder', 
+                #'font-weight': 'bolder', 
                 #'font-family': 'times new roman',
                 'padding-top': '15px',
                 'padding-bottom': '15px',
                 'bottom-margin': '0'})
     ])
-])
 
-#### health authority buttons row##############
-authority_buttons_row = html.Div([
-    dbc.Row([ha_buttons])
-    ], 
-    style={'color':'#000080',  # navy blue
-         'background-color': '#D3D3D3',  # light grey
+
+#### health authority buttons and slider ##############
+authority_buttons_row = dbc.Row([
+        dbc.Col(html.Div(), width = 1),
+        dbc.Col(yr_slider, width = 6), 
+        dbc.Col(html.Div(), width = 1),
+        dbc.Col(ha_buttons, width = 3),
+        dbc.Col(html.Div(), width = 1)
+        ],
+        style={'color':'#1f77b4',  # navy blue
+         'background-color': '#D3D3D3',  # light grey -> #D3D3D3
         'font-weight': 'bolder',
-        #'font-family': 'times new roman',
-        'font-size': '20px',
+        'font-size': '16px',
         'padding-top': '20px',
         'padding-bottom': '20px',
         'top-margin': '0',
         'text-align': "center"}
-)
-
-#### Slider column###################
-col1 = html.Div(yr_slider)
+        )
+     
+    
 
 ##### Cards column ###################
-col2 = html.Div(
+col1 = html.Div(
     [dbc.Col([
         dbc.Row(completed_cases_card),
         html.Br(),
@@ -427,8 +423,8 @@ col2 = html.Div(
         'text-align': "center"}
     )
 
-############ col3 #######################
-###### column 3 needs five rows ########
+############ col2 #######################
+###### column 2 needs five rows ########
 # row1 elements (titles of top two plots)
 row1_col1 = dbc.Row(html.Div("Proportion of completed cases", style = {"font-weight": "bolder", 'text-align': "center"}))
 row1_col2 = dbc.Row(html.Div("Health authority", style = {"font-weight": "bolder", 'text-align': "center"}))
@@ -436,6 +432,7 @@ row1_col2 = dbc.Row(html.Div("Health authority", style = {"font-weight": "bolder
 row1 = html.Div([dbc.Row(
     [
         dbc.Col(row1_col1, md = 6),
+        dbc.Col(html.Div(), md=1),
         dbc.Col(row1_col2, md = 6)
     ]
     )]
@@ -468,7 +465,10 @@ row3 = html.Div([dbc.Row(
 
 # row 4 elements (buttons and dropdown of bottom two plots)
 row4_col1 = dbc.Row(fast_slow_button)
-row4_col2 = dbc.Row(hosp_dropdown)
+row4_col2 = dbc.Row([
+    dbc.Col(html.Div(), width = 2),
+    dbc.Col(hosp_dropdown, width = 8),
+    dbc.Col(html.Div(), width=2)])
 
 row4 = html.Div([dbc.Row(
     [
@@ -493,7 +493,7 @@ row5 = html.Div([dbc.Row(
 )
 
 
-col3 = html.Div(
+col2 = html.Div(
     [
         row1,       # has titles of plots of first row
         row2,      # has top two plots
@@ -508,9 +508,8 @@ col3 = html.Div(
 ########### columns for slider, cards and plots############
 main_row = html.Div([
     dbc.Row([
-        dbc.Col(col1, md=1),    # slider column
-        dbc.Col(col2, md=2),    # Cards column
-        dbc.Col(col3, width=9)  # plots column
+        dbc.Col(col1, md=2),    # Cards column
+        dbc.Col(col2, width=9)  # plots column
     ])
 ],
 style={'padding-top': "30px"})
@@ -521,7 +520,8 @@ app.layout = dbc.Container([
     title_row,
     authority_buttons_row,
     main_row
-])
+],
+ style={"background-color": "aliceblue"})
 
 
 ############## call backs ######################################################
@@ -543,8 +543,8 @@ def update_comp_prop_plot(year, health_authority):
 @app.callback(
     Output('map', 'srcDoc'),
     Input('health_authority_buttons', 'value'))
-def update_map_image_plot(authority):
-    return map_image_plot(authority)
+def update_map_plot(authority):
+    return map_plot(authority)
 
 # chainback dropdown - callback
 
