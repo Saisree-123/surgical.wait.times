@@ -47,7 +47,7 @@ class SurgicalPlots:
 
        
         # Cataract Surgery is a unique high volume procedure often performed in seperate OR facilities and will be excluded from a part of the analysis.
-        self.no_cataract = main.query('procedure != "Cataract Surgery"')
+        self.no_cataract = clean.query('procedure != "Cataract Surgery"')
 
     
     def filtering(self,health_authority,year):
@@ -69,7 +69,7 @@ class SurgicalPlots:
         # most treated and less treated surgeries
         procedure_order = procedure_unite.groupby('procedure').mean().reset_index()
         procedure_order = procedure_order.sort_values('wait_time_90')
-
+        print(procedure_order)
         # fastest and slowest procedures
         self.fastest = procedure_order.head(5)
         self.slowest = procedure_order.tail(5)
@@ -81,7 +81,7 @@ class SurgicalPlots:
     def pace_procedures(self,health_authority,year,pace):              
         self.filtering(health_authority,year)  
           
-        colors=['lightsteelblue','paleturquoise','red','red','red']    
+        colors=['green','paleturquoise','navyblue','royalblue','black']    
         if(pace=="Fastest"):
             result=self.fastest
             axis_range=np.arange(0,14,2)
@@ -91,19 +91,19 @@ class SurgicalPlots:
             axis_range=np.arange(0,150,10)
             sort_order=self.slowest['wait_time_90'].to_list()
         print(pace,result.head())
-        procedure_time_chart = alt.Chart(result,width=500,height=200).mark_bar(size=20,
-                                                        point={"filled": False, "fill": "white"}, opacity=0.7).encode(
+        procedure_time_chart = alt.Chart(result,width=500,height=300).mark_bar(size=30,
+                                                        point={"filled": False, "fill": "white"},opacity=0.5).encode(
                                                         x=alt.X('wait_time_90',title="Wait time(in weeks)",axis=alt.Axis(values=axis_range,grid=False)),
                                                         y=alt.Y('procedure', scale=alt.Scale(zero=False),sort=sort_order,axis=alt.Axis(labels=False,grid=False)),
                                                         color=alt.Color('procedure',legend=None,scale=alt.Scale(range=colors)),
                                                         tooltip=['procedure','wait_time_90'])
-        procedure_time_text_time_chart = alt.Chart(result,width=500,height=200).mark_bar(size=20,
-                                                        point={"filled": False, "fill": "white"}, opacity=0.7).encode(
+        procedure_time_text_time_chart = alt.Chart(result,width=500,height=200).mark_bar(size=30,
+                                                        point={"filled": False, "fill": "white"},opacity=0.5).encode(
                                                         x=alt.X('wait_time_90',axis=alt.Axis(values=axis_range)),
                                                         y=alt.Y('procedure', scale=alt.Scale(zero=False),sort=sort_order,axis=alt.Axis(labels=False)),                                                        
                                                         )
-        procedure_time_text_procedure_chart = alt.Chart(result,width=500,height=200).mark_bar(size=20,
-                                                        point={"filled": False, "fill": "white"}, opacity=0.7).encode(
+        procedure_time_text_procedure_chart = alt.Chart(result,width=500,height=200).mark_bar(size=30,
+                                                        point={"filled": False, "fill": "white"},opacity=0.5).encode(
                                                         x=alt.X('wait_time_90',axis=alt.Axis(values=axis_range)),
                                                         y=alt.Y('procedure', scale=alt.Scale(zero=False),sort=sort_order,axis=alt.Axis(labels=False)),                                                        
                                                         )
@@ -309,6 +309,10 @@ download_button = html.Div([
     dcc.Download(id="download-df-csv")
 ])
 
+link_github= html.Div([
+    html.A('Github', href='https://github.com/Saisree-123/surgical.wait.times', target='_blank')
+    ])
+
 # 1st plot - proportion of completed cases
 proportion_cases = html.Div([
     html.Iframe(
@@ -317,14 +321,14 @@ proportion_cases = html.Div([
             health_authority="Interior", year=[2017, 2022]),
         style={'border-width': '0', 'width': '100%', 'height': '400px'}
     )
-])
+],style={'width':'100%'})
 
 # 2nd plot - BC map
 plot_map_object = html.Div([html.Iframe(
     id='map',
     srcDoc=map_plot(authority='Interior'),
     style={'border-width': '0', 'width': '100%', 'height': '500px'})
-])
+],style={'width':'100%'})
 
 # 3rd plot - procedure plot
 procedure_plot = html.Div([
@@ -333,8 +337,8 @@ procedure_plot = html.Div([
         srcDoc=surgical_plots.pace_procedures(
             health_authority="Interior", year=[2017, 2022],pace="Fastest"),
         style={'border-width': '0', 'width': '100%', 'height': '400px'}
-    )
-])
+    )    
+],style={'width':'100%'})
 
 # 4th plot - hospital wait and completed cases
 hosp_wait_comp_cases = html.Div([
@@ -342,10 +346,10 @@ hosp_wait_comp_cases = html.Div([
         id="hosp_wait_comp_plot",
         srcDoc=surgical_plots.wait_complete_plot(
             health_authority="Interior", hospname="100 Mile District General Hospital", year=[2017, 2022]),
-        style={'border-width': '0', 'width': '500px',
+        style={'border-width': '0', 'width': '100%',
                'height': '350px', 'display': 'inline-block'}
     )
-])
+],style={'width':'100%'})
 
 
 
@@ -430,6 +434,17 @@ row2 = html.Div([dbc.Row(
     )], 
     style={"padding-bottom": 0}
 )
+# text for top 2 plots
+row3_1_col1 = dbc.Row(html.Div("Efficiency of a health authority in different quarters of the selected years", style = {'text-align': "center",'color':'grey'}))
+row3_1_col2 = dbc.Row(html.Div("Region spread of different health authority in British Columbia", style = {'text-align': "center",'color':'grey'}))
+
+row3_1 = html.Div([dbc.Row(
+    [
+        dbc.Col(row3_1_col1, md = 6),
+        dbc.Col(row3_1_col2, md = 6)
+    ]
+    )]
+)
 
 # row 3 elements (titles of bottom two plots)
 row3_col1 = dbc.Row(html.Div("Fastest/Slowest treated procedures", style = {"font-weight": "bolder", 'text-align': "center"}))
@@ -472,14 +487,36 @@ row5 = html.Div([dbc.Row(
     style={"padding-bottom": 0}
 )
 
+# text for bottom 2 plots
+row5_1_col1 = dbc.Row(html.Div("Top five fastest or slowest procedures based on 90th percentile wait time", style = {'text-align': "center",'color':'grey'}))
+row5_1_col2 = dbc.Row(html.Div("The total completed and waiting cases in each selected hospital in BC", style = {'text-align': "center",'color':'grey'}))
+
+row5_1 = html.Div([dbc.Row(
+    [
+        dbc.Col(row5_1_col1, md = 6),
+        dbc.Col(row5_1_col2, md = 6)
+    ]
+    )]
+)
+row6 = html.Div([dbc.Row(
+    [
+        dbc.Col(md = 6),
+        dbc.Col(download_button, md = 3),
+        dbc.Col(link_github , md=3)
+    ]
+    )]
+)
 
 col2 = html.Div(
     [
         row1,       # has titles of plots of first row
         row2,      # has top two plots
+        row3_1,
         row3,
         row4,
-        row5
+        row5,
+        row5_1,
+        row6
     ],
     style={'padding-left': 0, "padding-right": 0}
     )
@@ -500,7 +537,8 @@ app.layout = dbc.Container([
     title_row,
     authority_buttons_row,
     main_row,
-    download_button
+    # download_button,
+    # link_github
 ],
  style={"background-color": "aliceblue"})
 
