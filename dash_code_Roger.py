@@ -232,56 +232,73 @@ def map_plot(authority = 'Interior'):
     
 
 # All the score cards
-wait_cases_card = dbc.Card(
-    [
-        dbc.CardHeader("Total waiting cases"),
-        dbc.CardBody(
-            [
-                html.P("This is some card text",
-                       className="text-center", id="wait_cases_text")
-            ]
-        ),
-    ],
-    style={"width": "10rem", 'display': 'inline-block',
-           "justify-content": "center", "border": "10px lightgray solid"}
-)
 completed_cases_card = dbc.Card(
     [
-        dbc.CardHeader("Total completed cases"),
         dbc.CardBody(
             [
+                html.P("Total Completed Cases", className="card-title",
+                       style = {"fontSize": "17px", 'font-weight':'bolder'}),
+                dbc.CardImg(src="/assets/total.png", top=True),
                 html.P("This is some card text",
-                       className="text-center", id="completed_cases_text")
+                       className="text-center", id="completed_cases_text",
+                       style = {"fontSize": "22px", 'font-weight':'bolder'})
             ]
         ),
     ],
-    style={"width": "10rem", 'display': 'inline-block', "border": "10px lightgray solid"}
+    style={"width": "20rem", "height": "14rem",'display': 'inline-block', 'background-color':'#becfe6',
+           "justify-content": 'center', 'justify-content': 'center', "border": "6px #568cc1 solid"}
 )
+
+wait_cases_card = dbc.Card(
+    [
+        
+        dbc.CardBody(
+            [
+                html.P("Total Waiting Cases", className="card-title",
+                       style = {"fontSize": "17px", 'font-weight':'bolder'}),
+                dbc.CardImg(src="/assets/waiting.png", top=True),
+                html.P(
+                    "This is some card text",
+                       className="text-center", id="wait_cases_text", 
+                       style = {"fontSize": "22px", 'font-weight':'bolder'})
+            ]
+        ),
+    ],
+    style={"width": "20rem", "height": "14rem",'display': 'inline-block', 'background-color':'#becfe6',
+           "justify-content": 'center', 'justify-content': 'center', "border": "6px #568cc1 solid"}
+)
+
 wait_50_card = dbc.Card(
     [
-        dbc.CardHeader("Mean waiting time (weeks) - 50 %le"),
         dbc.CardBody(
             [
+                html.P("Wait Time (in weeks) 50 %ile", className="card-title",
+                       style = {"fontSize": "17px", 'font-weight':'bolder'}),
+                dbc.CardImg(src="/assets/50.png", top=True),
                 html.P("This is some card text", className="text-center",
-                       id="mean_waiting_time_50%_text")
+                       id="mean_waiting_time_50%_text",
+                       style = {"fontSize": "23px", 'font-weight':'bolder'})
             ]
         ),
     ],
-    style={"width": "10rem", 'display': 'inline-block',
-           'align-items': 'center', 'justify-content': 'center', "border": "10px lightgray solid"}
+    style={"width": "20rem", "height": "14rem",'display': 'inline-block', 'background-color':'#becfe6',
+           "justify-content": 'center', 'justify-content': 'center', "border": "6px #568cc1 solid"}
 )
 wait_90_card = dbc.Card(
     [
-        dbc.CardHeader("Mean waiting time (weeks) - 90 %le"),
         dbc.CardBody(
             [
+                html.P("Wait Time (in weeks) 90 %ile", className="card-title",
+                       style = {"fontSize": "17px", 'font-weight':'bolder'}),
+                dbc.CardImg(src="/assets/90.png", top=True),
                 html.P("This is some card text", className="text-center",
-                       id="mean_waiting_time_90%_text")
+                       id="mean_waiting_time_90%_text",
+                       style = {"fontSize": "23px", 'font-weight':'bolder'})
             ]
         ),
     ],
-    style={"width": "10rem", 'display': 'inline-block',
-           'align-items': 'center', 'justify-content': 'center', "border": "10px lightgray solid"}
+    style={"width": "20rem", "height": "14rem",'display': 'inline-block', 'background-color':'#becfe6',
+           "justify-content": 'center', 'justify-content': 'center', "border": "6px #568cc1 solid"}
 )
 
 # year slider
@@ -291,7 +308,7 @@ yr_slider=html.Div([
             step=1, marks={i: f'{i}' for i in range(2009, 2022)},
             value=[2017, 2021]
             )        
-        ])
+        ], style={'font-weight':'bolder'})
 
 # health authority radio buttons
 ha_buttons = html.Div([
@@ -330,6 +347,15 @@ fast_slow_button = html.Div([
         labelStyle = {"cursor": "pointer", "margin-left":"20px"})
 ])
 
+# Download button
+download_button = html.Div([
+    html.Button("Download-csv", id="btn-download"),
+    dcc.Download(id="download-df-csv")
+])
+
+link_github= html.Div([
+    html.A('Github', href='https://github.com/Saisree-123/surgical.wait.times', target='_blank')
+    ])
 
 # 1st plot - proportion of completed cases
 proportion_cases = html.Div([
@@ -337,7 +363,7 @@ proportion_cases = html.Div([
         id="comp_prop_plot_id",
         srcDoc=surgical_plots.comp_prop_plot(
             health_authority="Interior", year=[2017, 2022]),
-        style={'border-width': '0', 'width': '100%', 'height': '400px'}
+        style={"border": "6px #568cc1 solid", 'background-color':'#ffffff', 'width': '100%', 'height': '400px'}
     )
 ])
 
@@ -345,7 +371,7 @@ proportion_cases = html.Div([
 plot_map_object = html.Div([html.Iframe(
     id='map',
     srcDoc=map_plot(authority='Interior'),
-    style={'border-width': '0', 'width': '100%', 'height': '500px'})
+    style={"border": "6px #568cc1 solid", 'background-color':'#ffffff', 'width': '100%', 'height': '400px'})
 ])
 
 # 3rd plot - procedure plot
@@ -354,7 +380,7 @@ procedure_plot = html.Div([
         id="procedure_plot_id",
         srcDoc=surgical_plots.fastest_procedures(
             health_authority="Interior", year=[2017, 2022]),
-        style={'border-width': '0', 'width': '100%', 'height': '400px'}
+        style={"border": "6px #568cc1 solid", 'background-color':'#ffffff', 'width': '100%', 'height': '400px'}
     )
 ])
 
@@ -364,24 +390,26 @@ hosp_wait_comp_cases = html.Div([
         id="hosp_wait_comp_plot",
         srcDoc=surgical_plots.wait_complete_plot(
             health_authority="Interior", hospname="100 Mile District General Hospital", year=[2017, 2022]),
-        style={'border-width': '0', 'width': '500px',
-               'height': '350px', 'display': 'inline-block'}
+        style={"border": "6px #568cc1 solid", 'background-color':'#ffffff', 'width': '100%', 'height': '400px', 'display': 'inline-block'}
     )
 ])
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+
 server = app.server
 
 #### Title row ################################
 title_row = dbc.Row([
-        html.H1('SURGICAL WAIT TIMES - BC', 
-        style={'background-color': '#1f77b4', # navy blue -> #000080
+            html.H1('SURGICAL WAIT TIMES - BC', style={
+                'background-color': '#568cc1', # navy blue
                 'color': 'white', 
-                #'font-weight': 'bolder', 
-                #'font-family': 'times new roman',
                 'padding-top': '15px',
                 'padding-bottom': '15px',
-                'bottom-margin': '0'})
+                'bottom-margin': '0'
+                }),
+            dbc.Col(html.Div(), width = 8),
+            dbc.Col(link_github, width=1),
+            dbc.Col(download_button, width=2, style={'padding-bottom': '5px'})
     ])
 
 
@@ -393,12 +421,12 @@ authority_buttons_row = dbc.Row([
         dbc.Col(ha_buttons, width = 3),
         dbc.Col(html.Div(), width = 1)
         ],
-        style={'color':'#1f77b4',  # navy blue
-         'background-color': '#D3D3D3',  # light grey -> #D3D3D3
+        style={
+        'background-color': '#becfe6',
         'font-weight': 'bolder',
         'font-size': '16px',
-        'padding-top': '20px',
-        'padding-bottom': '20px',
+        'padding-top': '15px',
+        'padding-bottom': '15px',
         'top-margin': '0',
         'text-align': "center"}
         )
@@ -412,27 +440,29 @@ col1 = html.Div(
         html.Br(),
         dbc.Row(wait_cases_card),
         html.Br(),
+        html.Br(),
         dbc.Row(wait_50_card),
         html.Br(),
         dbc.Row(wait_90_card)
-    ])],
+    ], width = 9)],
     style={
-        'font-family': 'times new roman',
-        'padding-left': 0, 
-        "padding-right": 0,
+        'border-color':'#1f77b4',
+        'padding-left': 15, 
+        'padding-right': 0,
         'text-align': "center"}
     )
 
 ############ col2 #######################
 ###### column 2 needs five rows ########
 # row1 elements (titles of top two plots)
-row1_col1 = dbc.Row(html.Div("Proportion of completed cases", style = {"font-weight": "bolder", 'text-align': "center"}))
-row1_col2 = dbc.Row(html.Div("Health authority", style = {"font-weight": "bolder", 'text-align': "center"}))
+row1_col1 = dbc.Row(html.Div("Proportion of completed cases", style = {
+                            "font-weight": "bolder", 'text-align': "center", 'font-size':'18px'}))
+row1_col2 = dbc.Row(html.Div("Health authority", style = {
+                            "font-weight": "bolder", 'text-align': "center", 'font-size':'18px'}))
 
 row1 = html.Div([dbc.Row(
     [
         dbc.Col(row1_col1, md = 6),
-        dbc.Col(html.Div(), md=1),
         dbc.Col(row1_col2, md = 6)
     ]
     )]
@@ -448,12 +478,30 @@ row2 = html.Div([dbc.Row(
         dbc.Col(row2_col2, md = 6)
     ]
     )], 
-    style={"padding-bottom": 0}
+    style={"padding-bottom": 50}
+)
+
+# text for top 2 plots
+row3_1_col1 = dbc.Row(html.Div(
+                    "Efficiency of a health authority in selected years (by quarter)", style = {
+                    'text-align': "center",'color':'#204e74'}))
+row3_1_col2 = dbc.Row(html.Div(
+                    "Health authority geographic boundaries", style = {
+                    'text-align': "center",'color':'#204e74'}))
+
+row3_1 = html.Div([dbc.Row(
+    [
+        dbc.Col(row3_1_col1, md = 6),
+        dbc.Col(row3_1_col2, md = 6)
+    ]
+    )]
 )
 
 # row 3 elements (titles of bottom two plots)
-row3_col1 = dbc.Row(html.Div("Fastest/Slowest treated procedures", style = {"font-weight": "bolder", 'text-align': "center"}))
-row3_col2 = dbc.Row(html.Div("Total completed and waiting cases in Hospital", style = {"font-weight": "bolder", 'text-align': "center"}))
+row3_col1 = dbc.Row(html.Div("Fastest/Slowest treated procedures", style = {
+                            "font-weight": "bolder", 'text-align': "center", 'font-size':'18px'}))
+row3_col2 = dbc.Row(html.Div("Completed and waiting cases", style = {
+                            "font-weight": "bolder", 'text-align': "center", 'font-size':'18px'}))
 
 row3 = html.Div([dbc.Row(
     [
@@ -464,10 +512,13 @@ row3 = html.Div([dbc.Row(
 )
 
 # row 4 elements (buttons and dropdown of bottom two plots)
-row4_col1 = dbc.Row(fast_slow_button)
+row4_col1 = dbc.Row([
+    dbc.Col(html.Div(), width=3),
+    dbc.Col(fast_slow_button, width=5),
+    dbc.Col(html.Div(), width=4)], style={'font-size':'16px','font-weight':'bolder'})
 row4_col2 = dbc.Row([
-    dbc.Col(html.Div(), width = 2),
-    dbc.Col(hosp_dropdown, width = 8),
+    dbc.Col(html.Div(), width=2),
+    dbc.Col(hosp_dropdown, width=8),
     dbc.Col(html.Div(), width=2)])
 
 row4 = html.Div([dbc.Row(
@@ -492,14 +543,42 @@ row5 = html.Div([dbc.Row(
     style={"padding-bottom": 0}
 )
 
+# text for bottom 2 plots
+row5_1_col1 = dbc.Row(html.Div(
+                    "Five fastest/slowest procedures using 90th percentile wait time", style = {
+                    'text-align': "center",'color':'#204e74'}))
+row5_1_col2 = dbc.Row(html.Div(
+                    "Number of completed and waiting cases for selected hospital", style = {
+                    'text-align': "center",'color':'#204e74'}))
+
+row5_1 = html.Div([dbc.Row(
+    [
+        dbc.Col(row5_1_col1, md = 6),
+        dbc.Col(row5_1_col2, md = 6)
+    ]
+    )]
+)
+# row6 = html.Div([dbc.Row(
+#     [
+# #        dbc.Col(md = 6),
+#         dbc.Col(download_button, md = 3),
+#         dbc.Col(link_github , md=3)
+#     ]
+#     )]
+# )
 
 col2 = html.Div(
     [
         row1,       # has titles of plots of first row
+        row3_1,
         row2,      # has top two plots
+    #    row3_1,
         row3,
         row4,
-        row5
+        row5_1,
+        row5,
+    #    row5_1,
+        # row6
     ],
     style={'padding-left': 0, "padding-right": 0}
     )
@@ -521,7 +600,7 @@ app.layout = dbc.Container([
     authority_buttons_row,
     main_row
 ],
- style={"background-color": "aliceblue"})
+style={"background-color": "#7ba2cd"})
 
 
 ############## call backs ######################################################
