@@ -99,3 +99,62 @@ All team members agree to the Feature Branch workflow, and the following convent
 3. Workflow 3: Pull requests will require the agreement of all team members before being accepted.
 4. Workflow 4: Pull requests will occur at least two days prior to the deadline for that feature.
 5. Workflow 5: Changes stemming from reviews of the pull request will be openly discussed by the whole group.
+
+## Final Reflection on Workload Distribution
+
+** This section should be completed AFTER Milestone 4 is done and submitted! Only one is needed PER group. **
+
+In this section we will ask you to self-report the workload distribution to various categories of tasks.
+For each of the categories, we want you to report the approximate workload distribution, split by the milestone.
+
+Here are the tables you are expected to complete (the first one is pre-filled in so you can see what we're expecting):
+
+### Milestone 1
+
+| Category           | Song Zhang(Alice) | Roger Wheeler | Jagdeep Brar | Saisree GR |
+|--------------------|---------------|---------------|---------------|---------------|
+| Repository Setup   | 100%           | -           | -             | -             |
+| Sketch             | 5%           | 5%           | 5%           | 85%           |
+| Documentation      | 15%           | 85%           | -           | -          |
+| Project Management | 25%           | 25%           | 25%            | 25%            |
+| Troubleshooting    | -             | -             | -             | -             |
+
+Brief notes/explanations (optional):
+- No troubleshooting was needed for Milestone 1
+- Song Zhang did most of the repository setup, whereas Roger did most of the documentation
+
+### Milestone 2
+
+| Category           | Song Zhang(Alice) | Roger Wheeler | Jagdeep Brar | Saisree GR |
+|---------------------------|---------------|---------------|---------------|---------------|
+| Documentation/Reflection  |      50%         |      50%           | -               |       -          |
+| Writing new code          |      20%         |      20%           | 30%                |       30%          |
+| Code Reviews/editing      |      20%         |      20%           | 30%                |       30%          |
+| Project Management       |      25%         |      25%           | 25%                |       25%          |
+| Testing & Troubleshooting |      25%         |      20%           | 35%                |       20%          |
+
+
+### Milestone 3
+
+| Category           | Song Zhang(Alice) | Roger Wheeler | Jagdeep Brar | Saisree GR |
+|---------------------------|---------------|---------------|---------------|---------------|
+| Documentation/Reflection  |      25%         |      25%           | 25%                |       25%          |
+| Writing new code          |      30%         |      25%           | 25%                |       20%          |
+| Code Reviews/editing      |      25%         |      25%           | 25%                |       25%          |
+| Project Management        |      25%         |      25%           | 25%                |       25%          |
+| Testing & Troubleshooting |      15%         |      35%           | 40%                |       10%          |
+
+
+
+### Milestone 4
+
+| Category           | Song Zhang(Alice) | Roger Wheeler | Jagdeep Brar | Saisree GR |
+|---------------------------|---------------|---------------|---------------|---------------|
+| Documentation/Reflection  |      25%         |      25%           | 25%                |       25%          |
+| Writing new code         |      25%         |      25%           | 25%                |       25%          |
+| Code Reviews/editing      |      25%         |      25%           | 25%                |       25%          |
+| Project Management        |      25%         |      25%           | 25%                |       25%          |
+| Testing & Troubleshooting |      25%         |      25%           | 25%                |       25%          |
+
+Brief notes/explanations (optional):
+- Every team member contributed equally to all categories. We were working synchronously.
