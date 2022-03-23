@@ -95,36 +95,40 @@ class SurgicalPlots:
         self.fastest = self.fastest.round(2)
         self.slowest = self.slowest.round(2)
 
-    def fastest_procedures(self, health_authority, year):
-        self.filtering(health_authority, year)
-        sort_order = self.fastest['wait_time_90'].to_list()
-        procedure_time_chart = alt.Chart(self.fastest, width=400, height=270).mark_bar(size=20,
-                                                                                       point={"filled": False, "fill": "white"}).encode(
-            x=alt.X('wait_time_90', axis=alt.Axis(values=np.arange(0, 14, 2))),
-            y=alt.Y('procedure', scale=alt.Scale(zero=False), sort=sort_order),
-            color=alt.Color('procedure', legend=None))
-        procedure_time_chart = procedure_time_chart + \
-            procedure_time_chart.mark_text(dx=15).encode(text="wait_time_90")
-        procedure_time_chart = procedure_time_chart.configure_axis(
-            grid=False
-            ).configure_view(strokeWidth=0)
-        return procedure_time_chart.to_html()
-
-    def slowest_procedures(self, health_authority, year):
-        self.filtering(health_authority, year)
-        sort_order = self.slowest['wait_time_90'].to_list()
-        procedure_time_chart = alt.Chart(self.slowest, width=400, height=270).mark_bar(size=20,
-                                                                                       point={"filled": False, "fill": "white"}).encode(
-            x=alt.X('wait_time_90', axis=alt.Axis(
-                values=np.arange(0, 150, 10))),
-            y=alt.Y('procedure', scale=alt.Scale(zero=False), sort=sort_order),
-            color=alt.Color('procedure', legend=None))
-        procedure_time_chart = procedure_time_chart + \
-            procedure_time_chart.mark_text(dx=15).encode(text="wait_time_90")
-        procedure_time_chart = procedure_time_chart.configure_axis(
-            grid=False
-            ).configure_view(strokeWidth=0)
-        return procedure_time_chart.to_html()
+    def pace_procedures(self,health_authority,year,pace):              
+        self.filtering(health_authority,year)  
+          
+        colors=['green','paleturquoise','navyblue','royalblue','black']    
+        if(pace=="Fastest"):
+            result=self.fastest
+            axis_range=np.arange(0,14,2)
+            sort_order=self.fastest['wait_time_90'].to_list()
+        else:
+            result=self.slowest
+            axis_range=np.arange(0,150,10)
+            sort_order=self.slowest['wait_time_90'].to_list()
+        print(pace,result.head())
+        procedure_time_chart = alt.Chart(result,width=500,height=300).mark_bar(size=30,
+                                                        point={"filled": False, "fill": "white"},opacity=0.5).encode(
+                                                        x=alt.X('wait_time_90',title="Wait time(in weeks)",axis=alt.Axis(values=axis_range,grid=False)),
+                                                        y=alt.Y('procedure', scale=alt.Scale(zero=False),sort=sort_order,axis=alt.Axis(labels=False,grid=False)),
+                                                        color=alt.Color('procedure',legend=None,scale=alt.Scale(range=colors)),
+                                                        tooltip=['procedure','wait_time_90'])
+        procedure_time_text_time_chart = alt.Chart(result,width=500,height=200).mark_bar(size=30,
+                                                        point={"filled": False, "fill": "white"},opacity=0.5).encode(
+                                                        x=alt.X('wait_time_90',axis=alt.Axis(values=axis_range)),
+                                                        y=alt.Y('procedure', scale=alt.Scale(zero=False),sort=sort_order,axis=alt.Axis(labels=False)),                                                        
+                                                        )
+        procedure_time_text_procedure_chart = alt.Chart(result,width=500,height=200).mark_bar(size=30,
+                                                        point={"filled": False, "fill": "white"},opacity=0.5).encode(
+                                                        x=alt.X('wait_time_90',axis=alt.Axis(values=axis_range)),
+                                                        y=alt.Y('procedure', scale=alt.Scale(zero=False),sort=sort_order,axis=alt.Axis(labels=False)),                                                        
+                                                        )
+        text_time=procedure_time_text_time_chart+procedure_time_text_time_chart.mark_text(dx=15,color='black',size=10).encode(text="wait_time_90")
+        text_procedure=procedure_time_text_procedure_chart+procedure_time_text_procedure_chart.mark_text(align='left',dx=-165,color='black',size=10).encode(text="procedure")
+        procedure_time_chart=procedure_time_chart+text_time+text_procedure 
+        procedure_time_chart=procedure_time_chart.configure_view(strokeWidth=0)
+        return procedure_time_chart.interactive().to_html()
 
     # data grouped by hospital for selected health authority and date range
     def data_by_hosp(self, health_authority, year, hospname):
@@ -349,7 +353,14 @@ fast_slow_button = html.Div([
 
 # Download button
 download_button = html.Div([
-    html.Button("Download-csv", id="btn-download"),
+    dbc.Button("Download-csv", id="btn-download",style={
+             'background-color': '#568cc1',
+              'color': 'aliceblue',
+              'border': '0px',
+              'hover': { 
+                     'color': '#ffffff'
+              }
+      }),
     dcc.Download(id="download-df-csv")
 ])
 
@@ -378,8 +389,8 @@ plot_map_object = html.Div([html.Iframe(
 procedure_plot = html.Div([
     html.Iframe(
         id="procedure_plot_id",
-        srcDoc=surgical_plots.fastest_procedures(
-            health_authority="Interior", year=[2017, 2022]),
+        srcDoc=surgical_plots.pace_procedures(
+            health_authority="Interior", year=[2017, 2022],pace="Fastest"),
         style={"border": "6px #568cc1 solid", 'background-color':'#ffffff', 'width': '100%', 'height': '400px'}
     )
 ])
@@ -676,10 +687,7 @@ def update_wait_complete_plot(health_authority, year, hospname):
      Input("fastest_slowest_treatments_buttons", "value")]
 )
 def update_procedure_plot(health_authority, year, pace):
-    if(pace == "Slowest"):
-        return surgical_plots.slowest_procedures(health_authority, year)
-    else:
-        return surgical_plots.fastest_procedures(health_authority, year)
+    return surgical_plots.pace_procedures(health_authority, year,pace)
 
 # score cards - callback
 
