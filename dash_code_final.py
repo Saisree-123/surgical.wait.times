@@ -716,7 +716,13 @@ def update_score_cards(health_authority, year):
     mean_wait_time_50 = filtered_data['wait_time_50'].mean()
     mean_wait_time_90 = filtered_data['wait_time_90'].mean()
     return total_waiting, total_completed, round(mean_wait_time_50), round(mean_wait_time_90)
-
-
+# button download - csv
+@app.callback(
+    Output("download-df-csv", "data"),
+    Input("btn-download", "n_clicks"),
+    prevent_initial_call=True,
+)
+def downloading_button(n_clicks):
+    return dcc.send_data_frame(surgical_plots.qdata.to_csv, "BC_surgical_wait_times.csv")
 if __name__ == '__main__':
     app.run_server(debug=True,host='127.0.0.1')
