@@ -25,7 +25,7 @@ This document (the README file) is going to give you an overview of our project.
 - Song Zhang: An analytical, dependable, and responsible person.
 - Roger Wheeler: A Chartered Professional in Human Resources (CPHR) with a strong interest in analytics.
 
-Links to deploy our app: [BC Surgical Wait Times Dashboard](https://surgical-wait-times-bc-canada.herokuapp.com/)    
+Link to deploy our app: [BC Surgical Wait Times Dashboard](https://surgical-wait-times-bc-canada.herokuapp.com/)    
     
 
 
