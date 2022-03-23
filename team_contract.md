@@ -128,10 +128,10 @@ Brief notes/explanations (optional):
 | Category                  | Team member 1 | Team member 2 | Team member 3 | Team member 4 |
 |---------------------------|---------------|---------------|---------------|---------------|
 | Documentation/Reflection  |      25%         |      25%           | 25%                |       25%          |
-| Writing new code          |               |               |               |               |
-| Code Reviews/editing      |               |               |               |               |
-| Project Management        |               |               |               |               |
-| Testing & Troubleshooting |               |               |               |               |
+| Writing new code          |      25%         |      25%           | 25%                |       25%          |
+| Code Reviews/editing      |      25%         |      25%           | 25%                |       25%          |
+| Project Management       |      25%         |      25%           | 25%                |       25%          |
+| Testing & Troubleshooting |      25%         |      25%           | 25%                |       25%          |
 
 Brief notes/explanations (optional):
 
@@ -139,11 +139,11 @@ Brief notes/explanations (optional):
 
 | Category                  | Team member 1 | Team member 2 | Team member 3 | Team member 4 |
 |---------------------------|---------------|---------------|---------------|---------------|
-| Documentation/Reflection  |               |               |               |               |
-| Writing new code          |               |               |               |               |
-| Code Reviews/editing      |               |               |               |               |
-| Project Management        |               |               |               |               |
-| Testing & Troubleshooting |               |               |               |               |
+| Documentation/Reflection  |      25%         |      25%           | 25%                |       25%          |
+| Writing new code          |      25%         |      25%           | 25%                |       25%          |
+| Code Reviews/editing      |      25%         |      25%           | 25%                |       25%          |
+| Project Management        |      25%         |      25%           | 25%                |       25%          |
+| Testing & Troubleshooting |      25%         |      25%           | 25%                |       25%          |
 
 Brief notes/explanations (optional):
 
@@ -151,10 +151,10 @@ Brief notes/explanations (optional):
 
 | Category                  | Team member 1 | Team member 2 | Team member 3 | Team member 4 |
 |---------------------------|---------------|---------------|---------------|---------------|
-| Documentation/Reflection  |               |               |               |               |
-| Writing new code          |               |               |               |               |
-| Code Reviews/editing      |               |               |               |               |
-| Project Management        |               |               |               |               |
-| Testing & Troubleshooting |               |               |               |               |
+| Documentation/Reflection  |      25%         |      25%           | 25%                |       25%          |
+| Writing new code         |      25%         |      25%           | 25%                |       25%          |
+| Code Reviews/editing      |      25%         |      25%           | 25%                |       25%          |
+| Project Management        |      25%         |      25%           | 25%                |       25%          |
+| Testing & Troubleshooting |      25%         |      25%           | 25%                |       25%          |
 
 Brief notes/explanations (optional):
