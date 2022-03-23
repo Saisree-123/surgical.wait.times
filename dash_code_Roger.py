@@ -272,7 +272,7 @@ wait_50_card = dbc.Card(
     [
         dbc.CardBody(
             [
-                html.P("Wait Time (in weeks) 50 %ile", className="card-title",
+                html.P("Average Wait Time (in weeks) 50 %ile", className="card-title",
                        style = {"fontSize": "17px", 'font-weight':'bolder'}),
                 dbc.CardImg(src="/assets/50.png", top=True),
                 html.P("This is some card text", className="text-center",
@@ -288,7 +288,7 @@ wait_90_card = dbc.Card(
     [
         dbc.CardBody(
             [
-                html.P("Wait Time (in weeks) 90 %ile", className="card-title",
+                html.P("Average Wait Time (in weeks) 90 %ile", className="card-title",
                        style = {"fontSize": "17px", 'font-weight':'bolder'}),
                 dbc.CardImg(src="/assets/90.png", top=True),
                 html.P("This is some card text", className="text-center",
