@@ -1,4 +1,4 @@
-from io import BytesIO
+
 
 import pandas as pd
 import numpy as np
@@ -9,8 +9,7 @@ import dash
 from dash import dcc, html, Input, Output
 import dash_bootstrap_components as dbc
 
-import base64
-from PIL import Image
+
 
 
 class SurgicalPlots:
