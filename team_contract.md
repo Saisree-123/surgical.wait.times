@@ -111,44 +111,44 @@ Here are the tables you are expected to complete (the first one is pre-filled in
 
 ### Milestone 1
 
-| Category           | Team member 1 | Team member 2 | Team member 3 | Team member 4 |
+| Category           | Song Zhang(Alice) | Roger Wheeler | Jagdeep Brar | Saisree GR |
 |--------------------|---------------|---------------|---------------|---------------|
-| Repository Setup   | 60%           | 40%           | -             | -             |
-| Sketch             | 20%           | 25%           | 25%           | 30%           |
-| Documentation      | 10%           | 10%           | 40%           | 40%           |
-| Project Management | 50%           | 50%           | 0%            | 0%            |
+| Repository Setup   | 100%           | -           | -             | -             |
+| Sketch             | 5%           | 5%           | 5%           | 85%           |
+| Documentation      | 15%           | 85%           | -           | -          |
+| Project Management | 25%           | 25%           | 25%            | 25%            |
 | Troubleshooting    | -             | -             | -             | -             |
 
 Brief notes/explanations (optional):
 - No troubleshooting was needed for Milestone 1
-- Member 1 and Member did most of the repository setup, whereas 3 and 4 did most of the documentation
+- Song Zhang did most of the repository setup, whereas Roger did most of the documentation
 
 ### Milestone 2
 
-| Category                  | Team member 1 | Team member 2 | Team member 3 | Team member 4 |
+| Category           | Song Zhang(Alice) | Roger Wheeler | Jagdeep Brar | Saisree GR |
 |---------------------------|---------------|---------------|---------------|---------------|
-| Documentation/Reflection  |      25%         |      25%           | 25%                |       25%          |
-| Writing new code          |      25%         |      25%           | 25%                |       25%          |
-| Code Reviews/editing      |      25%         |      25%           | 25%                |       25%          |
+| Documentation/Reflection  |      50%         |      50%           | -               |       -          |
+| Writing new code          |      20%         |      20%           | 30%                |       30%          |
+| Code Reviews/editing      |      20%         |      20%           | 30%                |       30%          |
 | Project Management       |      25%         |      25%           | 25%                |       25%          |
-| Testing & Troubleshooting |      25%         |      25%           | 25%                |       25%          |
+| Testing & Troubleshooting |      25%         |      20%           | 35%                |       20%          |
 
 
 ### Milestone 3
 
-| Category                  | Team member 1 | Team member 2 | Team member 3 | Team member 4 |
+| Category           | Song Zhang(Alice) | Roger Wheeler | Jagdeep Brar | Saisree GR |
 |---------------------------|---------------|---------------|---------------|---------------|
 | Documentation/Reflection  |      25%         |      25%           | 25%                |       25%          |
-| Writing new code          |      25%         |      25%           | 25%                |       25%          |
+| Writing new code          |      30%         |      25%           | 25%                |       20%          |
 | Code Reviews/editing      |      25%         |      25%           | 25%                |       25%          |
 | Project Management        |      25%         |      25%           | 25%                |       25%          |
-| Testing & Troubleshooting |      25%         |      25%           | 25%                |       25%          |
+| Testing & Troubleshooting |      15%         |      35%           | 40%                |       10%          |
 
 
 
 ### Milestone 4
 
-| Category                  | Team member 1 | Team member 2 | Team member 3 | Team member 4 |
+| Category           | Song Zhang(Alice) | Roger Wheeler | Jagdeep Brar | Saisree GR |
 |---------------------------|---------------|---------------|---------------|---------------|
 | Documentation/Reflection  |      25%         |      25%           | 25%                |       25%          |
 | Writing new code         |      25%         |      25%           | 25%                |       25%          |
@@ -156,4 +156,5 @@ Brief notes/explanations (optional):
 | Project Management        |      25%         |      25%           | 25%                |       25%          |
 | Testing & Troubleshooting |      25%         |      25%           | 25%                |       25%          |
 
-
+Brief notes/explanations (optional):
+- Every team member contributed equally to all categories. We were working synchronously.
