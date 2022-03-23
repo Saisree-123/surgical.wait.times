@@ -133,7 +133,6 @@ Brief notes/explanations (optional):
 | Project Management       |      25%         |      25%           | 25%                |       25%          |
 | Testing & Troubleshooting |      25%         |      25%           | 25%                |       25%          |
 
-Brief notes/explanations (optional):
 
 ### Milestone 3
 
@@ -145,7 +144,7 @@ Brief notes/explanations (optional):
 | Project Management        |      25%         |      25%           | 25%                |       25%          |
 | Testing & Troubleshooting |      25%         |      25%           | 25%                |       25%          |
 
-Brief notes/explanations (optional):
+
 
 ### Milestone 4
 
@@ -157,4 +156,4 @@ Brief notes/explanations (optional):
 | Project Management        |      25%         |      25%           | 25%                |       25%          |
 | Testing & Troubleshooting |      25%         |      25%           | 25%                |       25%          |
 
-Brief notes/explanations (optional):
+
